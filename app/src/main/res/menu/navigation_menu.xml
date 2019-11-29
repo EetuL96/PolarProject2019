@@ -17,7 +17,7 @@
         android:id="@+id/group2">
         <item
             android:id="@+id/drawer_new_run"
-            android:title="New Run" />
+            android:title="Start Run" />
         <item
             android:id="@+id/drawer_create_map"
             android:title="Create Map" />
