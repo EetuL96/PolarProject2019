@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">PolarProject</string>
+    <string name="emailLoginHint">Email</string>
+    <string name="passwordLoginHint">Password</string>
+    <string name="loginButton">Login</string>
+    <string name="registerLink">Register</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
+</resources>
