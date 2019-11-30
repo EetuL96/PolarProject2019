@@ -31,6 +31,11 @@
         android:name="com.example.polarproject.MapsActivity"
         android:label="activity_maps"
         tools:layout="@layout/activity_maps" />
+    <fragment
+        android:id="@+id/routesFragment"
+        android:name="com.example.polarproject.RoutesFragment"
+        android:label="fragment_routes"
+        tools:layout="@layout/fragment_routes" />
 
 
 </navigation>

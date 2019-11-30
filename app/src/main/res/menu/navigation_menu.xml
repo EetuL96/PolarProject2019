@@ -20,7 +20,10 @@
             android:title="Start Run" />
         <item
             android:id="@+id/drawer_create_map"
-            android:title="Create Map" />
+            android:title="Create New Route" />
+        <item
+            android:id="@+id/drawer_routes"
+            android:title="Saved Routes" />
         <item
             android:id="@+id/drawer_logout"
             android:title="Log Out" />
