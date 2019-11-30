@@ -36,6 +36,11 @@
         android:name="com.example.polarproject.RoutesFragment"
         android:label="fragment_routes"
         tools:layout="@layout/fragment_routes" />
+    <fragment
+        android:id="@+id/startRunFragment"
+        android:name="com.example.polarproject.StartRunFragment"
+        android:label="fragment_start_run"
+        tools:layout="@layout/fragment_start_run" />
 
 
 </navigation>

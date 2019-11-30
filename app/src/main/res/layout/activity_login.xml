@@ -69,7 +69,7 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/login_button"
             android:text="@string/loginButton"
-            android:textColor="@color/colorWhiteGray"
+            android:textColor="@color/colorLightGray"
             android:layout_gravity="center"/>
 
         <TextView

@@ -18,7 +18,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener {
 
     private NavController navController;
     private DrawerLayout drawerLayout;
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
             }
 
             case R.id.drawer_new_run: {
-                navController.navigate(R.id.testFragment);
+                navController.navigate(R.id.startRunFragment);
                 break;
             }
             case R.id.drawer_create_map: {
