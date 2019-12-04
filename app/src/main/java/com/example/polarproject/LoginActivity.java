@@ -40,9 +40,6 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
         mQueue = Volley.newRequestQueue(this);
-
-
-
     }
 
     @Override
@@ -66,33 +63,49 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
             buttonLogin.setEnabled(false);
             String email = editTextEmail.getText().toString();
             String password = editTextPassword.getText().toString();
-            //checkIfEmailAndPassword(email, password);
-            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(i);
-            finish();
+            loginToServer(email, password);
+            //Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            //startActivity(i);
+            //finish();
 
         }
     }
 
-    public void checkIfEmailAndPassword(String email, String password)
+    public void loginToServer(String email, String password)
     {
         Log.d("LOL", "START");
-        String url = "https://polarapp-oamk.herokuapp.com/users/email/" + email;
+        String url = "https://polarapp-oamk.herokuapp.com/login";
+        JSONObject js = new JSONObject();
+        try {
+            js.put("email", email);
+            js.put("password", password);
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                (Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject jsonObject) {
                         try
                         {
-                            User user = new User();
-                            user.setID(jsonObject.getString("_id"));
-                            Log.d("LOL", jsonObject.toString());
 
-                            ((Application) LoginActivity.this.getApplication()).setUser(user);
+                            boolean auth = jsonObject.getBoolean("auth");
+                            String token = jsonObject.getString("token");
+                            Log.d("TOKEN", "Token: " + token);
+                            if (auth)
+                            {
+                                Log.d("LOL", "Login success!");
+                            }
+                            else
+                            {
+                                Log.d("LOL", "Login Failed");
+                            }
+                            Log.d("LOL", jsonObject.toString());
+                            /*((Application) LoginActivity.this.getApplication()).setUser(user);
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);
-                            finish();
+                            finish();*/
                         }
                         catch (JSONException e)
                         {
@@ -105,7 +118,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("LOL", error.toString());
+                        //Log.d("LOL", error.getMessage().toString());
                         buttonLogin.setEnabled(true);
                     }
                 });
