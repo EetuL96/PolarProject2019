@@ -74,16 +74,18 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
     public void loginToServer(String email, String password)
     {
         Log.d("LOL", "START");
+        Log.d("LOL", "email: " +  email + " password: " + password);
         String url = "https://polarapp-oamk.herokuapp.com/login";
         JSONObject js = new JSONObject();
         try {
             js.put("email", email);
             js.put("password", password);
+            Log.d("LOL", "AAAAAA");
         }catch (JSONException e) {
             e.printStackTrace();
         }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
+                (Request.Method.POST, url, js, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject jsonObject) {
@@ -96,16 +98,17 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                             if (auth)
                             {
                                 Log.d("LOL", "Login success!");
+
                             }
                             else
                             {
                                 Log.d("LOL", "Login Failed");
                             }
                             Log.d("LOL", jsonObject.toString());
-                            /*((Application) LoginActivity.this.getApplication()).setUser(user);
+                            //((Application) LoginActivity.this.getApplication()).setUser(user);
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);
-                            finish();*/
+                            finish();
                         }
                         catch (JSONException e)
                         {
