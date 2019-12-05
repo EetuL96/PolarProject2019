@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -71,6 +72,54 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         }
     }
 
+    public void getUserByEmail(String email, String token)
+    {
+        String url = " https://polarapp-oamk.herokuapp.com/users/email/" + email;
+        JSONObject js = new JSONObject();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        try
+                        {
+
+                            String id = jsonObject.getString("_id");
+                            String email = jsonObject.getString("email");
+                            String firstname = jsonObject.getString("firstname");
+                            String lastname = jsonObject.getString("lastname");
+
+                            User user = new User();
+                            user.setID(id);
+                            user.setFirstName(firstname);
+                            user.setLastName(lastname);
+
+                            ((Application) LoginActivity.this.getApplication()).setUser(user);
+                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(i);
+                            finish();
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                            Log.d("LOL", e.toString());
+                            buttonLogin.setEnabled(true);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //Log.d("LOL", error.getMessage().toString());
+                        buttonLogin.setEnabled(true);
+                    }
+                });
+        mQueue.add(jsonObjectRequest);
+        Log.d("LOL", "FINISH");
+    }
+
+
+
     public void loginToServer(String email, String password)
     {
         Log.d("LOL", "START");
@@ -98,17 +147,14 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                             if (auth)
                             {
                                 Log.d("LOL", "Login success!");
-
+                                getUserByEmail(email, token);
                             }
                             else
                             {
                                 Log.d("LOL", "Login Failed");
                             }
                             Log.d("LOL", jsonObject.toString());
-                            //((Application) LoginActivity.this.getApplication()).setUser(user);
-                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(i);
-                            finish();
+
                         }
                         catch (JSONException e)
                         {
@@ -122,6 +168,8 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //Log.d("LOL", error.getMessage().toString());
+                        Toast toast = Toast.makeText(LoginActivity.this, "Check password and email!", Toast.LENGTH_LONG);
+                        toast.show();
                         buttonLogin.setEnabled(true);
                     }
                 });

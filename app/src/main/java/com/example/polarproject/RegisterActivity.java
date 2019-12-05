@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,10 +26,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     Button buttonRegister;
     EditText editTextEmail;
     EditText editTextPassword;
+    EditText editTextFirstname;
+    EditText editTextLastname;
 
     String url = "https://polarapp-oamk.herokuapp.com/users";
     private String email;
     private String password;
+    private String firstname;
+    private String lastname;
 
     private RequestQueue queue;
 
@@ -42,6 +47,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         editTextEmail = (EditText) findViewById(R.id.emailEditText);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        editTextFirstname = (EditText) findViewById(R.id.firstnameEditText);
+        editTextLastname = (EditText) findViewById(R.id.lastnameEditText);
 
         queue = Volley.newRequestQueue(this);
     }
@@ -53,6 +60,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         {
             email = editTextEmail.getText().toString();
             password = editTextPassword.getText().toString();
+            firstname = editTextFirstname.getText().toString();
+            lastname = editTextLastname.getText().toString();
             createUserToDB();
         }
     }
@@ -63,6 +72,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         try {
             js.put("email", email);
             js.put("password", password);
+            js.put("firstname", firstname);
+            js.put("lastname", lastname);
         }catch (JSONException e) {
             e.printStackTrace();
         }
@@ -71,6 +82,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Toast toast = Toast.makeText(RegisterActivity.this, "Registered!", Toast.LENGTH_LONG);
+                        toast.show();
                     }
                 }, new Response.ErrorListener() {
 

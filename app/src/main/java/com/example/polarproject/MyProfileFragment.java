@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.polarproject.Adapters.MyProfileFragmentStateAdapter;
 import com.google.android.material.tabs.TabLayout;
@@ -35,6 +36,8 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private User user;
 
     private OnFragmentInteractionListener mListener;
 
@@ -76,7 +79,11 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_my_profile, container, false);
+        user = ((Application) getActivity().getApplication()).getUser();
+        View  rootView = inflater.inflate(R.layout.fragment_my_profile, container, false);
+        TextView textViewName = rootView.findViewById(R.id.textViewName);
+        textViewName.setText(user.getFirstName() + " " + user.getLastName());
+        return rootView;
 
     }
 

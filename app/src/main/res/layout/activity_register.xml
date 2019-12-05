@@ -52,6 +52,40 @@
             android:ems="10"
             android:inputType="textEmailAddress" />
 
+        <TextView
+            android:id="@+id/textViewFirstName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Firstname"
+            android:textColor="@color/colorWhite" />
+
+        <EditText
+            android:id="@+id/firstnameEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:background="@drawable/edit_text_login"
+            android:padding="5dp"
+            android:ems="10"
+            android:inputType="" />
+
+        <TextView
+            android:id="@+id/textViewLastName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lastname"
+            android:textColor="@color/colorWhite" />
+
+        <EditText
+            android:id="@+id/lastnameEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:background="@drawable/edit_text_login"
+            android:padding="5dp"
+            android:ems="10"
+            android:inputType="" />
+
+
+
 
         <TextView
             android:id="@+id/textViewPassword"
