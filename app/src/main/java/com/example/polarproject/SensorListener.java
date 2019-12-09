@@ -1,4 +1,4 @@
-package com.example.acctest;
+package com.example.polarproject;
 
 import android.content.Context;
 import android.hardware.SensorEvent;
@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import polar.com.sdk.api.PolarBleApi;
@@ -23,8 +24,6 @@ import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.PolarBleApiDefaultImpl;
 import polar.com.sdk.api.model.PolarDeviceInfo;
 import polar.com.sdk.api.model.PolarHrBroadcastData;
-
-import io.reactivex.disposables.Disposable;
 import polar.com.sdk.api.model.PolarHrData;
 
 public class SensorListener implements SensorEventListener {
@@ -175,18 +174,18 @@ public class SensorListener implements SensorEventListener {
             broadcastDisposable = api.startListenForPolarHrBroadcasts(null).observeOn(AndroidSchedulers.mainThread()).subscribe(
                     new Consumer<PolarHrBroadcastData>() {
                         @Override
-                        public void accept(PolarHrBroadcastData polarHrBroadcastData) throws Exception {
+                        public void accept(PolarHrBroadcastData polarHrBroadcastData){
                             String deviceID = polarHrBroadcastData.polarDeviceInfo.deviceId;
                             cb.updateHR(polarHrBroadcastData.hr);
                         }
                     },
                     new Consumer<Throwable>() {
                         @Override
-                        public void accept(Throwable throwable) throws Exception {}
+                        public void accept(Throwable throwable){}
                     },
                     new Action() {
                         @Override
-                        public void run() throws Exception {}
+                        public void run(){}
                     }
             );
         } else {
