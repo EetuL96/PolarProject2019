@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         NavigationView navView = findViewById(R.id.nav_view);
         NavigationUI.setupWithNavController(navView, navController);
         navView.setNavigationItemSelectedListener(this);
+        navController.navigate(R.id.startRunFragment);
 
     }
 
