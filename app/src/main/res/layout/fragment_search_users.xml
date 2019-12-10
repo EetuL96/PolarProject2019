@@ -4,36 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchUsersFragment">
-
+    tools:context=".SearchUsersFragment"
+    android:background="@drawable/background1">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="12"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp">
 
-        <EditText
-            android:layout_width="200dp"
-            android:layout_height="40dp"
-            android:layout_weight="10"
-            android:background="@drawable/edit_text_search_user"
-            android:hint="Type email here...">
-        </EditText>
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
+            android:weightSum="12"
+            >
 
-        <Button
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:text=""
-            android:background="@drawable/search_button_default"
-            android:layout_weight="1"
-            android:layout_marginLeft="8dp">
-        </Button>
+            <EditText
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_weight="10"
+                android:background="@drawable/edit_text_search_user"
+                android:hint="Type email here..."></EditText>
+
+            <Button
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/search_button_default"
+                android:text="">
+
+            </Button>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp" />
+
     </LinearLayout>
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

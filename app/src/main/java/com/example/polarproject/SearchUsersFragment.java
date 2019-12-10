@@ -5,10 +5,16 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.polarproject.Adapters.RecyclerViewAdapter;
+
+import java.util.ArrayList;
 
 
 /**
@@ -30,6 +36,11 @@ public class SearchUsersFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private ArrayList<String> dataset = new ArrayList<>();
 
     public SearchUsersFragment() {
         // Required empty public constructor
@@ -65,8 +76,32 @@ public class SearchUsersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        //TEST DATA
+        dataset.add("JONNE");
+        dataset.add("TERO");
+        dataset.add("TONI");
+        dataset.add("ISMO");
+        dataset.add("SEPPO");
+        dataset.add("IRMELI");
+        dataset.add("KIMMO");
+        dataset.add("EETU");
+        dataset.add("SAKARI");
+        dataset.add("JANNE");
+        dataset.add("JOHN");
+        dataset.add("WILLIAM");
+        dataset.add("WAYNE");
+        dataset.add("MICHAEL");
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search_users, container, false);
+        View parent = inflater.inflate(R.layout.fragment_search_users, container, false);
+        recyclerView = (RecyclerView)  parent.findViewById(R.id.recyclerview);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        mAdapter = new RecyclerViewAdapter(getContext(), dataset);
+        recyclerView.setAdapter(mAdapter);
+        return parent;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
