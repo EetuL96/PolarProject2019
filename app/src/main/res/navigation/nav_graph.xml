@@ -33,8 +33,4 @@
         tools:layout="@layout/fragment_start_run">
     </fragment>
 
-    <action android:id="@+id/action_global_myProfile"
-        app:destination="@id/myProfileFragment" />
-
-
 </navigation>

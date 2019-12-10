@@ -70,19 +70,23 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
             case R.id.drawer_myprofile: {
                 navController.navigate(R.id.myProfileFragment);
+                drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             }
 
             case R.id.drawer_new_run: {
                 navController.navigate(R.id.startRunFragment);
+                drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             }
             case R.id.drawer_create_map: {
                 navController.navigate(R.id.createMapFragment);
+                drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             }
             case R.id.drawer_routes: {
                 navController.navigate(R.id.routesFragment);
+                drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             }
             case R.id.drawer_logout: {
@@ -92,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 break;
             }
         }
-        drawerLayout.closeDrawer(GravityCompat.START);
+
         return true;
     }
 }
