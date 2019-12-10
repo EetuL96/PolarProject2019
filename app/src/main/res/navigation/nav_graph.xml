@@ -33,4 +33,10 @@
         tools:layout="@layout/fragment_start_run">
     </fragment>
 
+    <fragment
+        android:id="@+id/searchUsersFragment"
+        android:name="com.example.polarproject.SearchUsersFragment"
+        android:label="Search Users"
+        tools:layout="@layout/fragment_search_users" />
+
 </navigation>

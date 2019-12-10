@@ -19,7 +19,7 @@ import android.widget.Toolbar;
 
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener {
 
     private NavController navController;
     private DrawerLayout drawerLayout;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
 
         appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.createMapFragment)
+                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.createMapFragment, R.id.searchUsersFragment)
                         .setDrawerLayout(drawerLayout)
                         .build();
 
@@ -86,6 +86,11 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
             }
             case R.id.drawer_routes: {
                 navController.navigate(R.id.routesFragment);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                break;
+            }
+            case R.id.drawer_search_users: {
+                navController.navigate(R.id.searchUsersFragment);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             }

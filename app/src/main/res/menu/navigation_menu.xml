@@ -25,6 +25,9 @@
             android:id="@+id/drawer_routes"
             android:title="Saved Routes" />
         <item
+            android:id="@+id/drawer_search_users"
+            android:title="Search Users" />
+        <item
             android:id="@+id/drawer_logout"
             android:title="Log Out" />
     </group>
