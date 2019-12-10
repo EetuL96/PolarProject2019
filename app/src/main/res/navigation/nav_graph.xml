@@ -4,27 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
 
-    app:startDestination="@+id/testFragment">
+    app:startDestination="@+id/startRunFragment">
 
-    <fragment
-        android:id="@+id/testFragment"
-        android:name="com.example.polarproject.TestFragment"
-        android:label="fragment_test"
-        tools:layout="@layout/fragment_test" />
-    <fragment
-        android:id="@+id/testFragment2"
-        android:name="com.example.polarproject.TestFragment2"
-        android:label="fragment_test_fragment2"
-        tools:layout="@layout/fragment_test_fragment2" />
     <fragment
         android:id="@+id/myProfileFragment"
         android:name="com.example.polarproject.MyProfileFragment"
-        android:label="fragment_my_profile"
+        android:label="My Profile"
         tools:layout="@layout/fragment_my_profile" />
     <fragment
         android:id="@+id/createMapFragment"
         android:name="com.example.polarproject.CreateMapFragment"
-        android:label="fragment_create_map"
+        android:label="Create Map"
         tools:layout="@layout/fragment_create_map" />
     <activity
         android:id="@+id/mapsActivity"
@@ -34,12 +24,12 @@
     <fragment
         android:id="@+id/routesFragment"
         android:name="com.example.polarproject.RoutesFragment"
-        android:label="fragment_routes"
+        android:label="My Routes"
         tools:layout="@layout/fragment_routes" />
     <fragment
         android:id="@+id/startRunFragment"
         android:name="com.example.polarproject.StartRunFragment"
-        android:label="fragment_start_run"
+        android:label="Start run"
         tools:layout="@layout/fragment_start_run" />
 
 

@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toolbar;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
     private NavController navController;
     private DrawerLayout drawerLayout;
+    AppBarConfiguration appBarConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +34,22 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         drawerLayout = findViewById(R.id.drawer_layout);
 
 
-        AppBarConfiguration appBarConfiguration =
+        appBarConfiguration =
                 new AppBarConfiguration.Builder(navController.getGraph())
                         .setDrawerLayout(drawerLayout)
                         .build();
 
         NavigationView navView = findViewById(R.id.nav_view);
         NavigationUI.setupWithNavController(navView, navController);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         navView.setNavigationItemSelectedListener(this);
-        navController.navigate(R.id.startRunFragment);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                || super.onSupportNavigateUp();
 
     }
 
