@@ -2,6 +2,7 @@ package com.example.polarproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -51,6 +52,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         editTextLastname = (EditText) findViewById(R.id.lastnameEditText);
 
         queue = Volley.newRequestQueue(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+        RegisterActivity.this.startActivity(intent);
+        RegisterActivity.this.finish();
     }
 
     @Override

@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
             Log.d("LOL", "Register link pressed");
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             LoginActivity.this.startActivity(intent);
+            LoginActivity.this.finish();
         }
         else if (v == findViewById(R.id.buttonLogin))
         {
