@@ -1,17 +1,8 @@
-package com.example.polarproject;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.polarproject.Classes;
 
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.input.InputManager;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -20,78 +11,35 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.polarproject.Classes.HerokuDataBase;
+import com.example.polarproject.Application;
+import com.example.polarproject.LoginActivity;
+import com.example.polarproject.MainActivity;
+import com.example.polarproject.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LoginActivity extends AppCompatActivity  implements View.OnClickListener, HerokuDataBase.DataBaseListener {
+public class HerokuDataBase {
 
-    TextView textViewRegister;
-    Button buttonLogin;
-    EditText editTextEmail;
-    EditText editTextPassword;
     RequestQueue mQueue;
-    HerokuDataBase herokuDataBase = null;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
-        textViewRegister = (TextView) findViewById(R.id.textViewRegister);
-        textViewRegister.setOnClickListener(this);
-        buttonLogin = (Button) findViewById(R.id.buttonLogin);
-        buttonLogin.setOnClickListener(this);
-        editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-        editTextPassword = findViewById(R.id.editTextPassword);
-        mQueue = Volley.newRequestQueue(this);
-        herokuDataBase = new HerokuDataBase(this);
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        buttonLogin.setEnabled(true);
-    }
-
-    private void closeKeyboard()
+    public HerokuDataBase(Context context)
     {
-        View view = this.getCurrentFocus();
-        if (view != null)
-        {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
+        this.callbackInterface = (DataBaseListener) context;
+        mQueue = Volley.newRequestQueue(context);
     }
 
-    @Override
-    public void onClick(View v) {
 
-        if (v == findViewById(R.id.textViewRegister))
-        {
-            Log.d("LOL", "Register link pressed");
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            LoginActivity.this.startActivity(intent);
-            LoginActivity.this.finish();
-        }
-        else if (v == findViewById(R.id.buttonLogin))
-        {
-            Log.d("LOL", "Login pressed!");
-            closeKeyboard();
-            buttonLogin.setEnabled(false);
-            String email = editTextEmail.getText().toString();
-            String password = editTextPassword.getText().toString();
-            herokuDataBase.loginToServer(email, password);
-            //loginToServer(email, password);
-            //Intent i = new Intent(LoginActivity.this, MainActivity.class);
-            //startActivity(i);
-            //finish();
 
-        }
+    public interface DataBaseListener
+    {
+        void userByEmailSuccess(User user);
+        void userByEmailFailed();
+        void userByEmailError();
+        void loginError();
     }
+    DataBaseListener callbackInterface = null;
 
-    /*
     public void getUserByEmail(String email, String token)
     {
         String url = " https://polarapp-oamk.herokuapp.com/users/email/" + email;
@@ -114,16 +62,13 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                             user.setFirstName(firstname);
                             user.setLastName(lastname);
 
-                            ((Application) LoginActivity.this.getApplication()).setUser(user);
-                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(i);
-                            finish();
+                            callbackInterface.userByEmailSuccess(user);
                         }
                         catch (JSONException e)
                         {
                             e.printStackTrace();
                             Log.d("LOL", e.toString());
-                            buttonLogin.setEnabled(true);
+                            callbackInterface.userByEmailFailed();
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -131,15 +76,13 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //Log.d("LOL", error.getMessage().toString());
-                        buttonLogin.setEnabled(true);
+                        callbackInterface.userByEmailError();
                     }
                 });
         mQueue.add(jsonObjectRequest);
         Log.d("LOL", "FINISH");
-    }*/
+    }
 
-
-    /*
     public void loginToServer(String email, String password)
     {
         Log.d("LOL", "START");
@@ -152,6 +95,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
             Log.d("LOL", "AAAAAA");
         }catch (JSONException e) {
             e.printStackTrace();
+            callbackInterface.loginError();
         }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, url, js, new Response.Listener<JSONObject>() {
@@ -172,6 +116,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                             else
                             {
                                 Log.d("LOL", "Login Failed");
+                                callbackInterface.loginError();
                             }
                             Log.d("LOL", jsonObject.toString());
 
@@ -180,7 +125,8 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                         {
                             e.printStackTrace();
                             Log.d("LOL", e.toString());
-                            buttonLogin.setEnabled(true);
+                            callbackInterface.loginError();
+
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -188,37 +134,10 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //Log.d("LOL", error.getMessage().toString());
-                        Toast toast = Toast.makeText(LoginActivity.this, "Check password and email!", Toast.LENGTH_LONG);
-                        toast.show();
-                        buttonLogin.setEnabled(true);
+                        callbackInterface.loginError();
                     }
                 });
         mQueue.add(jsonObjectRequest);
         Log.d("LOL", "FINISH");
-    }*/
-
-    @Override
-    public void userByEmailSuccess(User user) {
-        ((Application) LoginActivity.this.getApplication()).setUser(user);
-        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(i);
-        finish();
-    }
-
-    @Override
-    public void userByEmailFailed() {
-        buttonLogin.setEnabled(true);
-    }
-
-    @Override
-    public void userByEmailError() {
-        buttonLogin.setEnabled(true);
-    }
-
-    @Override
-    public void loginError() {
-        Toast toast = Toast.makeText(LoginActivity.this, "Check password and email!", Toast.LENGTH_LONG);
-        toast.show();
-        buttonLogin.setEnabled(true);
     }
 }
