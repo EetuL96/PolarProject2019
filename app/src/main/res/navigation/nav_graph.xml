@@ -30,7 +30,11 @@
         android:id="@+id/startRunFragment"
         android:name="com.example.polarproject.StartRunFragment"
         android:label="Start run"
-        tools:layout="@layout/fragment_start_run" />
+        tools:layout="@layout/fragment_start_run">
+    </fragment>
+
+    <action android:id="@+id/action_global_myProfile"
+        app:destination="@id/myProfileFragment" />
 
 
 </navigation>

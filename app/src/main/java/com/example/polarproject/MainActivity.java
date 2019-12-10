@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
 
         appBarConfiguration =
-                new AppBarConfiguration.Builder(navController.getGraph())
+                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.createMapFragment)
                         .setDrawerLayout(drawerLayout)
                         .build();
 
@@ -50,21 +50,22 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
-
     }
-
+    
 
     @Override
     public void onFragmentInteraction(Uri uri) {
 
     }
 
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
 
             case R.id.drawer_myprofile: {
-                navController.navigate(R.id.myProfileFragment);
+                //navController.navigate(R.id.myProfileFragment);
+                navController.navigate(R.id.action_global_myProfile);
                 break;
             }
 
