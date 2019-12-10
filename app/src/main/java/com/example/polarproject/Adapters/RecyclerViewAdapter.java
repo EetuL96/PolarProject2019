@@ -1,6 +1,7 @@
 package com.example.polarproject.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private ArrayList<String> list = new ArrayList<>();
     private Context context;
+    private ListenerInterface callbackInterface = null;
+
+    public interface ListenerInterface
+    {
+        void itemClicked(String name);
+    }
+
+
 
     public static class MyViewHolder extends RecyclerView.ViewHolder
     {
@@ -35,6 +44,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public RecyclerViewAdapter(Context context, ArrayList<String> list)
     {
         this.context = context;
+        callbackInterface = (ListenerInterface) context;
         this.list = list;
     }
 
@@ -50,6 +60,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(MyViewHolder holder, int position)
     {
         holder.textView.setText(list.get(position));
+        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = list.get(position);
+                Log.d("LLL", list.get(position) + "Clicked!");
+                callbackInterface.itemClicked(name);
+            }
+        });
     }
 
     @Override

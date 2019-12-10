@@ -17,9 +17,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toolbar;
 
+import com.example.polarproject.Adapters.RecyclerViewAdapter;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener, RecyclerViewAdapter.ListenerInterface {
 
     private NavController navController;
     private DrawerLayout drawerLayout;
@@ -103,5 +104,10 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         }
 
         return true;
+    }
+
+    @Override
+    public void itemClicked(String name) {
+        Log.d("WWWW", name + " Item Clicked!");
     }
 }
