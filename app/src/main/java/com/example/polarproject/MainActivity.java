@@ -18,9 +18,10 @@ import android.view.MenuItem;
 import android.widget.Toolbar;
 
 import com.example.polarproject.Adapters.RecyclerViewAdapter;
+import com.google.android.material.internal.NavigationMenu;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener, RecyclerViewAdapter.ListenerInterface {
+public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener, RecyclerViewAdapter.ListenerInterface {
 
     private NavController navController;
     private DrawerLayout drawerLayout;
@@ -109,5 +110,8 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
     @Override
     public void itemClicked(String name) {
         Log.d("WWWW", name + " Item Clicked!");
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        navController.navigate(R.id.profileFragment, bundle);
     }
 }

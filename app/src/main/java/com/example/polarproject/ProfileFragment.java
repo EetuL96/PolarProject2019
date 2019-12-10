@@ -5,28 +5,22 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.polarproject.Adapters.RecyclerViewAdapter;
-
-import java.util.ArrayList;
+import android.widget.TextView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SearchUsersFragment.OnFragmentInteractionListener} interface
+ * {@link ProfileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SearchUsersFragment#newInstance} factory method to
+ * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchUsersFragment extends Fragment {
+public class ProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -38,12 +32,7 @@ public class SearchUsersFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private RecyclerView recyclerView;
-    private RecyclerViewAdapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
-    private ArrayList<String> dataset = new ArrayList<>();
-
-    public SearchUsersFragment() {
+    public ProfileFragment() {
         // Required empty public constructor
     }
 
@@ -53,11 +42,11 @@ public class SearchUsersFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchUsersFragment.
+     * @return A new instance of fragment ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SearchUsersFragment newInstance(String param1, String param2) {
-        SearchUsersFragment fragment = new SearchUsersFragment();
+    public static ProfileFragment newInstance(String param1, String param2) {
+        ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -73,38 +62,17 @@ public class SearchUsersFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        //TEST DATA
-        dataset.add("JONNE");
-        dataset.add("TERO");
-        dataset.add("TONI");
-        dataset.add("ISMO");
-        dataset.add("SEPPO");
-        dataset.add("IRMELI");
-        dataset.add("KIMMO");
-        dataset.add("EETU");
-        dataset.add("SAKARI");
-        dataset.add("JANNE");
-        dataset.add("JOHN");
-        dataset.add("WILLIAM");
-        dataset.add("WAYNE");
-        dataset.add("MICHAEL");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
-
         // Inflate the layout for this fragment
-        View parent = inflater.inflate(R.layout.fragment_search_users, container, false);
-        recyclerView = (RecyclerView)  parent.findViewById(R.id.recyclerview);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new RecyclerViewAdapter(getContext(), dataset);
-        recyclerView.setAdapter(mAdapter);
-        return parent;
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        TextView tv = view.findViewById(R.id.textView);
+        String name = getArguments().getString("name");
+        tv.setText(name);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -129,7 +97,6 @@ public class SearchUsersFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        dataset.clear();
     }
 
     /**
