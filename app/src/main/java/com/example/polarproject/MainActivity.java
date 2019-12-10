@@ -51,7 +51,12 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-    
+
+    @Override
+    public void onBackPressed() {
+        this.finish();
+        System.exit(0);
+    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -64,8 +69,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         switch (menuItem.getItemId()) {
 
             case R.id.drawer_myprofile: {
-                //navController.navigate(R.id.myProfileFragment);
-                navController.navigate(R.id.action_global_myProfile);
+                navController.navigate(R.id.myProfileFragment);
                 break;
             }
 
