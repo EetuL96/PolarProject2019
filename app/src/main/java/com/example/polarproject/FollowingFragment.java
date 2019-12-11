@@ -5,10 +5,19 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.example.polarproject.Adapters.RecyclerViewAdapter;
+import com.example.polarproject.Classes.HerokuDataBase;
+
+import java.util.ArrayList;
 
 
 /**
@@ -19,7 +28,7 @@ import android.view.ViewGroup;
  * Use the {@link FollowingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FollowingFragment extends Fragment {
+public class FollowingFragment extends Fragment implements HerokuDataBase.DatabaseGetFollowedUsersListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,8 +37,15 @@ public class FollowingFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
+
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private ArrayList<User> dataset = new ArrayList<>();
+    private View parent;
+    private HerokuDataBase herokuDataBase;
+
 
     public FollowingFragment() {
         // Required empty public constructor
@@ -65,8 +81,23 @@ public class FollowingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_following, container, false);
+
+        dataset.clear();
+        parent = inflater.inflate(R.layout.fragment_following, container, false);
+        recyclerView = parent.findViewById(R.id.recyclerview);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        mAdapter = new RecyclerViewAdapter(getContext(), dataset);
+        recyclerView.setAdapter(mAdapter);
+
+        User user = ((Application) getActivity().getApplication()).getUser();
+        herokuDataBase = new HerokuDataBase(getContext());
+        herokuDataBase.setDatabaseGetFollowedListener(this);
+        herokuDataBase.getFollowedUsers(user.getID());
+
+        return parent;
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -87,22 +118,25 @@ public class FollowingFragment extends Fragment {
         }
     }
 
+
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
+    @Override
+    public void userGetFollowed(User user) {
+        dataset.add(user);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void userGetFollowError() {
+
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

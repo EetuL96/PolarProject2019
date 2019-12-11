@@ -92,7 +92,6 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
 
 
 
-        // Inflate the layout for this fragment
         dataset.clear();
         parent = inflater.inflate(R.layout.fragment_search_users, container, false);
         recyclerView = parent.findViewById(R.id.recyclerview);

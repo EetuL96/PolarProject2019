@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
-    //private ArrayList<String> list = new ArrayList<>();
     private ArrayList<User> userList = new ArrayList<>();
     private Context context;
     private ListenerInterface callbackInterface = null;
