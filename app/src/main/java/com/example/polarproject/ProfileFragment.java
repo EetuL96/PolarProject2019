@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.polarproject.Adapters.MyProfileFragmentStateAdapter;
 import com.example.polarproject.Classes.HerokuDataBase;
@@ -30,7 +31,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements TabLayoutMediator.TabConfigurationStrategy, View.OnClickListener{
+public class ProfileFragment extends Fragment implements TabLayoutMediator.TabConfigurationStrategy, View.OnClickListener, HerokuDataBase.DatabaseFollowUserListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -47,6 +48,10 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
 
     Button buttonFollow = null;
     View rootView;
+
+    User profileUser = new User();
+
+    HerokuDataBase herokuDataBase;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -87,10 +92,13 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         TextView tv = rootView.findViewById(R.id.textViewName);
-        User user = (User) getArguments().getSerializable("name");
-        tv.setText(user.getEmail());
+        profileUser = (User) getArguments().getSerializable("name");
+        tv.setText(profileUser.getEmail());
         buttonFollow = rootView.findViewById(R.id.buttonFollow);
         buttonFollow.setOnClickListener(this);
+
+        herokuDataBase = new HerokuDataBase(getContext());
+        herokuDataBase.setDatabaseFollowListener(this);
 
         return rootView;
     }
@@ -160,7 +168,18 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
             User user = application.getUser();
             String userId = user.getID();
             Log.d("DDDD", userId);
+            herokuDataBase.createNewFollow(user.getID(), profileUser.getID());
         }
+    }
+
+    @Override
+    public void userFollowed() {
+        Toast.makeText(getContext(), "Followed " + profileUser.getEmail(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void userFollowError() {
+
     }
 
 

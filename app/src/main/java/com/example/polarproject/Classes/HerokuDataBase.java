@@ -54,6 +54,16 @@ public class HerokuDataBase {
         callbackInterface4 = listener;
     }
 
+    public void setDatabaseFollowListener(DatabaseFollowUserListener listener)
+    {
+        callbackInterface5 = listener;
+    }
+
+    public interface DatabaseFollowUserListener
+    {
+        void userFollowed();
+        void userFollowError();
+    }
     public interface DataBaseSearchUserListener
     {
         void userSearchFound(User user);
@@ -82,6 +92,7 @@ public class HerokuDataBase {
     DatabaseRegisterListener callbackInterface2 = null;
     DataBaseAllUsersListener callbackInterface3 = null;
     DataBaseSearchUserListener callbackInterface4 = null;
+    DatabaseFollowUserListener callbackInterface5 = null;
 
     public void getUserByEmail(String email, String token)
     {
@@ -338,6 +349,7 @@ public class HerokuDataBase {
                     public void onResponse(JSONObject response) {
                         //callbackInterface2.registerSuccess();
                         Log.d("BBBB", "New Follow Created!");
+                        callbackInterface5.userFollowed();
                     }
                 }, new Response.ErrorListener() {
 
@@ -345,6 +357,7 @@ public class HerokuDataBase {
             public void onErrorResponse(VolleyError error) {
                 //callbackInterface2.registerError();
                 Log.d("BBBB", error.getMessage());
+                callbackInterface5.userFollowError();
             }
         }) {
 
