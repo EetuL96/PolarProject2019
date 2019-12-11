@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.polarproject.Adapters.MyProfileFragmentStateAdapter;
@@ -29,7 +30,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements TabLayoutMediator.TabConfigurationStrategy{
+public class ProfileFragment extends Fragment implements TabLayoutMediator.TabConfigurationStrategy, View.OnClickListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -43,6 +44,9 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
 
     MyProfileFragmentStateAdapter fragmentStateAdapter;
     ViewPager2 viewPager;
+
+    Button buttonFollow = null;
+    View rootView;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -81,13 +85,14 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        TextView tv = view.findViewById(R.id.textViewName);
+        rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        TextView tv = rootView.findViewById(R.id.textViewName);
         String name = getArguments().getString("name");
         tv.setText(name);
+        buttonFollow = rootView.findViewById(R.id.buttonFollow);
+        buttonFollow.setOnClickListener(this);
 
-
-        return view;
+        return rootView;
     }
 
     @Override
@@ -144,6 +149,14 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
             tab.setText("AWARDS");
         }
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == rootView.findViewById(R.id.buttonFollow))
+        {
+            Log.d("DDDD", "Button Follow Clicked!");
+        }
     }
 
 

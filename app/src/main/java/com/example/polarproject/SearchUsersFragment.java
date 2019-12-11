@@ -8,10 +8,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.polarproject.Adapters.RecyclerViewAdapter;
 import com.example.polarproject.Classes.HerokuDataBase;
@@ -27,7 +31,7 @@ import java.util.ArrayList;
  * Use the {@link SearchUsersFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchUsersFragment extends Fragment implements HerokuDataBase.DataBaseAllUsersListener {
+public class SearchUsersFragment extends Fragment implements HerokuDataBase.DataBaseAllUsersListener, HerokuDataBase.DataBaseSearchUserListener, View.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,8 +48,11 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
     private RecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<String> dataset = new ArrayList<>();
+    private Button buttonSearch = null;
+    private EditText editTextSeacrh = null;
 
     HerokuDataBase herokuDataBase;
+    View parent;
 
     public SearchUsersFragment() {
         // Required empty public constructor
@@ -77,23 +84,6 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        //TEST DATA
-        /*
-        dataset.add("JONNE");
-        dataset.add("TERO");
-        dataset.add("TONI");
-        dataset.add("ISMO");
-        dataset.add("SEPPO");
-        dataset.add("IRMELI");
-        dataset.add("KIMMO");
-        dataset.add("EETU");
-        dataset.add("SAKARI");
-        dataset.add("JANNE");
-        dataset.add("JOHN");
-        dataset.add("WILLIAM");
-        dataset.add("WAYNE");
-        dataset.add("MICHAEL");*/
-
     }
 
     @Override
@@ -104,7 +94,7 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
 
         // Inflate the layout for this fragment
         dataset.clear();
-        View parent = inflater.inflate(R.layout.fragment_search_users, container, false);
+        parent = inflater.inflate(R.layout.fragment_search_users, container, false);
         recyclerView = parent.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
@@ -112,9 +102,15 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
         mAdapter = new RecyclerViewAdapter(getContext(), dataset);
         recyclerView.setAdapter(mAdapter);
 
+        editTextSeacrh = (EditText) parent.findViewById(R.id.editTextSearch);
+        editTextSeacrh.setText("");
+        buttonSearch = (Button) parent.findViewById(R.id.buttonSearch);
+        buttonSearch.setOnClickListener(this);
+
         Log.d("IIII", "OnCreateView(): ");
         herokuDataBase = new HerokuDataBase(getActivity().getApplicationContext());
         herokuDataBase.setDatabaseAllUsersListener(this);
+        herokuDataBase.setDatabaseSearchListener(this);
         herokuDataBase.getAllUsers();
 
         return parent;
@@ -143,6 +139,7 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
         super.onDetach();
 
         mListener = null;
+        editTextSeacrh.setText("");
         dataset.clear();
         mAdapter.notifyDataSetChanged();
     }
@@ -154,21 +151,45 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
         mAdapter.notifyDataSetChanged();
     }
 
+
     @Override
     public void allUsersError() {
 
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    @Override
+    public void onClick(View view) {
+        if (view == parent.findViewById(R.id.buttonSearch))
+        {
+            Log.d("RRRR", "Search button CLICKED!");
+            String email = editTextSeacrh.getText().toString();
+            if (!TextUtils.isEmpty(email))
+            {
+                herokuDataBase.searchUserByEmail(email);
+            }
+            else
+            {
+                editTextSeacrh.setError("Email cannot be empty");
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void userSearchFound(String email) {
+        dataset.clear();
+        dataset.add(email);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void userSeacrhNotFound() {
+        dataset.clear();
+        mAdapter.notifyDataSetChanged();
+        Toast toast = Toast.makeText(getContext(), "User not found...", Toast.LENGTH_LONG);
+        toast.show();
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

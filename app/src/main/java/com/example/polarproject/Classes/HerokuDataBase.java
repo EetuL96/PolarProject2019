@@ -49,6 +49,16 @@ public class HerokuDataBase {
         this.callbackInterface3 =  context;
     }
 
+    public void setDatabaseSearchListener(DataBaseSearchUserListener listener)
+    {
+        callbackInterface4 = listener;
+    }
+
+    public interface DataBaseSearchUserListener
+    {
+        void userSearchFound(String email);
+        void userSeacrhNotFound();
+    }
     public interface DataBaseAllUsersListener
     {
         void userFound(String email);
@@ -71,6 +81,7 @@ public class HerokuDataBase {
     DataBaseLoginListener callbackInterface = null;
     DatabaseRegisterListener callbackInterface2 = null;
     DataBaseAllUsersListener callbackInterface3 = null;
+    DataBaseSearchUserListener callbackInterface4 = null;
 
     public void getUserByEmail(String email, String token)
     {
@@ -258,6 +269,48 @@ public class HerokuDataBase {
                     }
                 });
         mQueue.add(jsonArrayRequest);
+        Log.d("LOL", "FINISH");
+    }
+
+    public void searchUserByEmail(String email)
+    {
+        String url = "https://polarapp-oamk.herokuapp.com/users/email/" + email;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try
+                        {
+                            Log.d("RRRR", response.toString());
+
+                            String email = response.getString("email");
+                            callbackInterface4.userSearchFound(email);
+                            //Log.d("RRRR", "User fond: " + email);
+
+                            //User user = new User();
+                            //user.setID(id);
+                            //user.setFirstName(firstname);
+                            //user.setLastName(lastname);
+
+                            //callbackInterface.userByEmailSuccess(user);
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                            Log.d("RRRR", e.toString());
+                            callbackInterface4.userSeacrhNotFound();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("RRRR", error.getMessage());
+                        callbackInterface4.userSeacrhNotFound();
+                    }
+                });
+        mQueue.add(jsonObjectRequest);
         Log.d("LOL", "FINISH");
     }
 
