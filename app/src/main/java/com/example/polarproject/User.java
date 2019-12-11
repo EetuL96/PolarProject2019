@@ -1,6 +1,9 @@
 package com.example.polarproject;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
+
     public String getID() {
         return ID;
     }

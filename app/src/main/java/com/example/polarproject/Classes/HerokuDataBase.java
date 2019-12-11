@@ -56,12 +56,12 @@ public class HerokuDataBase {
 
     public interface DataBaseSearchUserListener
     {
-        void userSearchFound(String email);
+        void userSearchFound(User user);
         void userSeacrhNotFound();
     }
     public interface DataBaseAllUsersListener
     {
-        void userFound(String email);
+        void userFound(User user);
         void allUsersError();
     }
 
@@ -85,7 +85,7 @@ public class HerokuDataBase {
 
     public void getUserByEmail(String email, String token)
     {
-        String url = " https://polarapp-oamk.herokuapp.com/users/email/" + email;
+        String url = "https://polarapp-oamk.herokuapp.com/users/email/" + email;
         JSONObject js = new JSONObject();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -236,9 +236,12 @@ public class HerokuDataBase {
                             while (i < response.length())
                             {
                                 JSONObject jsonObject = response.getJSONObject(i);
+                                String id = jsonObject.getString("_id");
                                 String email = jsonObject.getString("email");
-                                Log.d("GGGGG", email);
-                                callbackInterface3.userFound(email);
+                                User user = new User();
+                                user.setID(id);
+                                user.setEmail(email);
+                                callbackInterface3.userFound(user);
                                 i++;
                             }
                             /*
@@ -285,7 +288,11 @@ public class HerokuDataBase {
                             Log.d("RRRR", response.toString());
 
                             String email = response.getString("email");
-                            callbackInterface4.userSearchFound(email);
+                            String id = response.getString("_id");
+                            User user = new User();
+                            user.setEmail(email);
+                            user.setID(id);
+                            callbackInterface4.userSearchFound(user);
                             //Log.d("RRRR", "User fond: " + email);
 
                             //User user = new User();
@@ -313,6 +320,45 @@ public class HerokuDataBase {
         mQueue.add(jsonObjectRequest);
         Log.d("LOL", "FINISH");
     }
+
+    public void createNewFollow(String ownId, String targetId)
+    {
+        JSONObject js = new JSONObject();
+        try {
+            js.put("myId", ownId);
+            js.put("targetId", targetId);
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String url = "https://polarapp-oamk.herokuapp.com/follows";
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.POST,url, js,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //callbackInterface2.registerSuccess();
+                        Log.d("BBBB", "New Follow Created!");
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //callbackInterface2.registerError();
+                Log.d("BBBB", error.getMessage());
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        mQueue.add(jsonObjReq);
+    }
+
+
 
 
 }

@@ -44,6 +44,10 @@
         tools:layout="@layout/fragment_profile"
         android:label="Profile">
     </fragment>
-
+    <fragment
+        android:id="@+id/followingFragment"
+        android:name="com.example.polarproject.FollowingFragment"
+        android:label="Following"
+        tools:layout="@layout/fragment_following" />
 
 </navigation>

@@ -23,7 +23,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.internal.NavigationMenu;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener, RecyclerViewAdapter.ListenerInterface {
+public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener, FollowingFragment.OnFragmentInteractionListener, RecyclerViewAdapter.ListenerInterface {
 
     private NavController navController;
     private DrawerLayout drawerLayout;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
 
         appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.createMapFragment, R.id.searchUsersFragment)
+                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.createMapFragment, R.id.searchUsersFragment, R.id.followingFragment)
                         .setDrawerLayout(drawerLayout)
                         .build();
 
@@ -94,6 +94,11 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             }
+            case R.id.drawer_following: {
+                navController.navigate(R.id.followingFragment);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                break;
+            }
             case R.id.drawer_search_users: {
                 navController.navigate(R.id.searchUsersFragment);
                 drawerLayout.closeDrawer(GravityCompat.START);
@@ -111,10 +116,9 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
     }
 
     @Override
-    public void itemClicked(String name) {
-        Log.d("WWWW", name + " Item Clicked!");
+    public void itemClicked(User user) {
         Bundle bundle = new Bundle();
-        bundle.putString("name", name);
+        bundle.putSerializable("name", user);
         navController.navigate(R.id.profileFragment, bundle);
     }
 

@@ -47,7 +47,7 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
     private RecyclerView recyclerView;
     private RecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    private ArrayList<String> dataset = new ArrayList<>();
+    private ArrayList<User> dataset = new ArrayList<>();
     private Button buttonSearch = null;
     private EditText editTextSeacrh = null;
 
@@ -145,9 +145,8 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
     }
 
     @Override
-    public void userFound(String email) {
-        Log.d("LLLL", "User: " + email);
-        dataset.add(email);
+    public void userFound(User user) {
+        dataset.add(user);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -177,9 +176,9 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
     }
 
     @Override
-    public void userSearchFound(String email) {
+    public void userSearchFound(User user) {
         dataset.clear();
-        dataset.add(email);
+        dataset.add(user);
         mAdapter.notifyDataSetChanged();
     }
 
