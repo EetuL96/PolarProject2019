@@ -41,6 +41,8 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
+        <service android:name="com.example.acctest.SensorListenerService"/>
+
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
