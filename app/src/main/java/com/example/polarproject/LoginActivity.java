@@ -2,10 +2,13 @@ package com.example.polarproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,17 +20,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.polarproject.Classes.HerokuDataBase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LoginActivity extends AppCompatActivity  implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity  implements View.OnClickListener, HerokuDataBase.DataBaseLoginListener {
 
     TextView textViewRegister;
     Button buttonLogin;
     EditText editTextEmail;
     EditText editTextPassword;
-    RequestQueue mQueue;
+    HerokuDataBase herokuDataBase = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +44,24 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         buttonLogin.setOnClickListener(this);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
-        mQueue = Volley.newRequestQueue(this);
+        herokuDataBase = new HerokuDataBase(this);
+        herokuDataBase.setDatabaseLoginListener(this);
     }
 
     @Override
     public void onResume(){
         super.onResume();
         buttonLogin.setEnabled(true);
+    }
+
+    private void closeKeyboard()
+    {
+        View view = this.getCurrentFocus();
+        if (view != null)
+        {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override
@@ -57,123 +72,43 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
             Log.d("LOL", "Register link pressed");
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             LoginActivity.this.startActivity(intent);
+            LoginActivity.this.finish();
         }
         else if (v == findViewById(R.id.buttonLogin))
         {
             Log.d("LOL", "Login pressed!");
+            closeKeyboard();
             buttonLogin.setEnabled(false);
             String email = editTextEmail.getText().toString();
             String password = editTextPassword.getText().toString();
-            loginToServer(email, password);
-            //Intent i = new Intent(LoginActivity.this, MainActivity.class);
-            //startActivity(i);
-            //finish();
 
+            herokuDataBase.loginToServer(email, password);
         }
     }
 
-    public void getUserByEmail(String email, String token)
-    {
-        String url = " https://polarapp-oamk.herokuapp.com/users/email/" + email;
-        JSONObject js = new JSONObject();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
-                        try
-                        {
-
-                            String id = jsonObject.getString("_id");
-                            String email = jsonObject.getString("email");
-                            String firstname = jsonObject.getString("firstname");
-                            String lastname = jsonObject.getString("lastname");
-
-                            User user = new User();
-                            user.setID(id);
-                            user.setFirstName(firstname);
-                            user.setLastName(lastname);
-
-                            ((Application) LoginActivity.this.getApplication()).setUser(user);
-                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(i);
-                            finish();
-                        }
-                        catch (JSONException e)
-                        {
-                            e.printStackTrace();
-                            Log.d("LOL", e.toString());
-                            buttonLogin.setEnabled(true);
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //Log.d("LOL", error.getMessage().toString());
-                        buttonLogin.setEnabled(true);
-                    }
-                });
-        mQueue.add(jsonObjectRequest);
-        Log.d("LOL", "FINISH");
+    @Override
+    public void userByEmailSuccess(User user) {
+        ((Application) LoginActivity.this.getApplication()).setUser(user);
+        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(i);
+        finish();
     }
 
+    @Override
+    public void userByEmailFailed() {
+        buttonLogin.setEnabled(true);
+    }
 
+    @Override
+    public void userByEmailError() {
+        buttonLogin.setEnabled(true);
+    }
 
-    public void loginToServer(String email, String password)
-    {
-        Log.d("LOL", "START");
-        Log.d("LOL", "email: " +  email + " password: " + password);
-        String url = "https://polarapp-oamk.herokuapp.com/login";
-        JSONObject js = new JSONObject();
-        try {
-            js.put("email", email);
-            js.put("password", password);
-            Log.d("LOL", "AAAAAA");
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, url, js, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
-                        try
-                        {
-
-                            boolean auth = jsonObject.getBoolean("auth");
-                            String token = jsonObject.getString("token");
-                            Log.d("TOKEN", "Token: " + token);
-                            if (auth)
-                            {
-                                Log.d("LOL", "Login success!");
-                                getUserByEmail(email, token);
-                            }
-                            else
-                            {
-                                Log.d("LOL", "Login Failed");
-                            }
-                            Log.d("LOL", jsonObject.toString());
-
-                        }
-                        catch (JSONException e)
-                        {
-                            e.printStackTrace();
-                            Log.d("LOL", e.toString());
-                            buttonLogin.setEnabled(true);
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //Log.d("LOL", error.getMessage().toString());
-                        Toast toast = Toast.makeText(LoginActivity.this, "Check password and email!", Toast.LENGTH_LONG);
-                        toast.show();
-                        buttonLogin.setEnabled(true);
-                    }
-                });
-        mQueue.add(jsonObjectRequest);
-        Log.d("LOL", "FINISH");
+    @Override
+    public void loginError() {
+        Toast toast = Toast.makeText(LoginActivity.this, "Check password and email!", Toast.LENGTH_LONG);
+        toast.show();
+        buttonLogin.setEnabled(true);
     }
 }

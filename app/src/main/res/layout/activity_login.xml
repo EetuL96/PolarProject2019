@@ -30,7 +30,8 @@
             android:layout_marginStart="0dp"
             android:layout_marginLeft="0dp"
             android:text="@string/emailLoginHint"
-            android:textColor="@color/colorWhite" />
+            android:textColor="@color/colorWhite"
+            android:fontFamily="@font/doppio_one"/>
 
         <EditText
             android:id="@+id/editTextEmail"
@@ -42,7 +43,8 @@
             android:text="esko.eka@gmail.com"
             android:inputType="textEmailAddress"
             android:textColor="@color/colorWhite"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:fontFamily="@font/doppio_one"/>
 
         <TextView
             android:id="@+id/textViewPasswordHint"
@@ -50,7 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/passwordLoginHint"
-            android:textColor="@color/colorWhite" />
+            android:textColor="@color/colorWhite"
+            android:fontFamily="@font/doppio_one"/>
 
         <EditText
             android:id="@+id/editTextPassword"
@@ -62,17 +65,19 @@
             android:inputType="textPassword"
             android:text="123"
             android:textColor="@color/colorWhite"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:fontFamily="@font/doppio_one"/>
 
         <Button
             android:id="@+id/buttonLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/login_button"
+            android:background="@drawable/button"
             android:text="@string/loginButton"
             android:textColor="@color/colorLightGray"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:fontFamily="@font/doppio_one"/>
 
         <TextView
             android:id="@+id/textViewRegister"
@@ -87,6 +92,8 @@
             android:layout_gravity="left"
             android:padding="10dp"
             tools:layout_editor_absoluteY="242dp" />
+            tools:layout_editor_absoluteY="242dp"
+            android:fontFamily="@font/doppio_one"/>
     </LinearLayout>
 
     <TextView
@@ -97,6 +104,7 @@
         android:textColor="@color/colorWhite"
         android:textSize="40dp"
         android:textStyle="bold"
+        android:fontFamily="@font/doppio_one"
         android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
