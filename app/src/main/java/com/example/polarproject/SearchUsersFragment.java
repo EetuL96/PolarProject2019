@@ -169,8 +169,9 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
             }
             else
             {
-                editTextSeacrh.setError("Email cannot be empty");
-                return;
+                dataset.clear();
+                mAdapter.notifyDataSetChanged();
+                herokuDataBase.getAllUsers();
             }
         }
     }
