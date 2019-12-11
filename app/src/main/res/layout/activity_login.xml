@@ -39,6 +39,7 @@
             android:background="@drawable/edit_text_login"
             android:ems="10"
             android:padding="5dp"
+            android:text="esko.eka@gmail.com"
             android:inputType="textEmailAddress"
             android:textColor="@color/colorWhite"
             android:textSize="20sp" />
@@ -59,6 +60,7 @@
             android:ems="10"
             android:padding="5dp"
             android:inputType="textPassword"
+            android:text="123"
             android:textColor="@color/colorWhite"
             android:textSize="20sp" />
 
@@ -74,7 +76,7 @@
 
         <TextView
             android:id="@+id/textViewRegister"
-            android:layout_width="56dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
             android:layout_marginLeft="0dp"
@@ -83,6 +85,7 @@
             android:textColor="@color/colorWhite"
             android:textSize="15dp"
             android:layout_gravity="left"
+            android:padding="10dp"
             tools:layout_editor_absoluteY="242dp" />
     </LinearLayout>
 

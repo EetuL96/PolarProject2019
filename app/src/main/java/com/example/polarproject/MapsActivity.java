@@ -6,8 +6,16 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.polarproject.Classes.DirectionsJSONParser;
+import com.example.polarproject.Classes.RouteDataPoint;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -15,8 +23,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -32,7 +43,10 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    ArrayList markerPoints= new ArrayList();
+    //ArrayList markerPoints= new ArrayList();
+    RequestQueue mQueue;
+    ArrayList<RouteDataPoint> dataPoints = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +56,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        mQueue = Volley.newRequestQueue(this);
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 16));
 
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        getRoute();
+
+        /*mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
 
@@ -93,11 +108,100 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
             }
-        });
+        });*/
 
     }
 
-    private class DownloadTask extends AsyncTask<String, String, String> {
+    public void getRoute()
+    {
+        String id = "5dee76af6d290c0017cb8e85";
+        String url = "https://polarapp-oamk.herokuapp.com/routes/" + id;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        try
+                        {
+                            //Log.d("ROUTETEST", jsonObject.toString()) ;
+                            try{
+                                JSONArray array = jsonObject.getJSONArray("datapoints");
+                                //Log.d("ROUTETEST", array.toString()) ;
+
+                                for(int i = 0; i< array.length() ;i++){
+                                    JSONObject jObject = array.getJSONObject(i);
+                                    //Log.d("ROUTETEST", jObject.toString()) ;
+                                    //Log.d("ROUTETEST", Double.toString(jObject.getDouble("lat")));
+                                    RouteDataPoint dataPoint = new RouteDataPoint();
+                                    dataPoint.setTime(jObject.getString("time"));
+                                    dataPoint.setLat(jObject.getDouble("lat"));
+                                    dataPoint.setLng(jObject.getDouble("lng"));
+                                    dataPoint.setActivity(jObject.getDouble("activity"));
+                                    dataPoint.setBpm(jObject.getInt("bpm"));
+                                    dataPoints.add(dataPoint);
+                                    /*JSONArray jArray = jObject.getJSONArray("Meals");
+                                    StringBuilder strBuilder = new StringBuilder();
+                                    for(int j = 0; j < jArray.length(); j++){
+                                        JSONObject jObject2 = jArray.getJSONObject(j);
+                                        String str = jObject2.getString("Name");
+                                        strBuilder.append(str + "\n");
+                                    }
+                                    String meal = strBuilder.toString();
+                                    if(!(meal.equals(""))){
+                                        arrayList.add(strBuilder.toString());
+                                    }*/
+                                }
+                                for (int i = 1; i < dataPoints.size() ; i++) {
+                                    //Log.d("ROUTETEST",  "i v size: " + i + " " + dataPoints.size());
+                                    int gValue = 255;
+                                    int rValue = 255;
+                                    double highBpm = 120;
+                                    double lowBpm = 60;
+                                    double bpm = dataPoints.get(i).getBpm();
+                                    //Double scaleValue = (Double.valueOf(i) - 0.5) / (dataPoints.size() - 1);
+                                    Double scaleValue = (bpm - lowBpm) / (highBpm - lowBpm);
+                                    scaleValue = Math.min(1.0, scaleValue);
+                                    scaleValue = Math.max(0.0, scaleValue);
+                                    Log.d("ROUTETEST", scaleValue.toString());
+                                    if (scaleValue > 0.5) {
+                                        gValue -= (255 * ((scaleValue - 0.5) * 2));
+                                    } else if (scaleValue < 0.5) {
+                                        rValue -= (255 * ((0.5 - scaleValue) * 2));
+                                    }
+                                    Log.d("ROUTETEST", "rgb: "+  rValue + " " + gValue);
+
+                                    int lineColor = Color.rgb(rValue, gValue, 0);
+                                    Polyline line = mMap.addPolyline(new PolylineOptions()
+                                            .add(new LatLng(dataPoints.get(i-1).getLat(), dataPoints.get(i-1).getLng()), new LatLng(dataPoints.get(i).getLat(), dataPoints.get(i).getLng()))
+                                            .width(16)
+                                            .color(lineColor));
+                                }
+                                double avgLat = (dataPoints.get(0).getLat() + dataPoints.get(dataPoints.size() - 1).getLat()) / 2;
+                                double avgLng = (dataPoints.get(0).getLng() + dataPoints.get(dataPoints.size() - 1).getLng()) / 2;
+
+                                LatLng startLocation = new LatLng(avgLat, avgLng);
+                                //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLocation, 6));
+                            }catch (Exception e){
+                            }
+                            //boolean auth = jsonObject.getBoolean("auth");
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                });
+        mQueue.add(jsonObjectRequest);
+        Log.d("LOL", "FINISH");
+    }
+
+    /*private class DownloadTask extends AsyncTask<String, String, String> {
 
         @Override
         protected String doInBackground(String... url) {
@@ -247,5 +351,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             urlConnection.disconnect();
         }
         return data;
-    }
+    }*/
 }
