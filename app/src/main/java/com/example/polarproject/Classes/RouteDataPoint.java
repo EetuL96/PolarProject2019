@@ -1,31 +1,33 @@
 package com.example.polarproject.Classes;
 
 public class RouteDataPoint {
-    String time;
-    Double lat;
-    Double lng;
+    private long time;
+    private double lat;
+    private double lng;
+    private double activity;
+    private int bpm;
 
-    public Double getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(Double lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public Double getLng() {
+    public double getLng() {
         return lng;
     }
 
-    public void setLng(Double lng) {
+    public void setLng(double lng) {
         this.lng = lng;
     }
 
-    public Double getActivity() {
+    public double getActivity() {
         return activity;
     }
 
-    public void setActivity(Double activity) {
+    public void setActivity(double activity) {
         this.activity = activity;
     }
 
@@ -37,14 +39,11 @@ public class RouteDataPoint {
         this.bpm = bpm;
     }
 
-    Double activity;
-    int bpm;
-
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 }
