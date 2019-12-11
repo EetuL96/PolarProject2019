@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.polarproject.Adapters.RecyclerViewAdapter;
+import com.example.polarproject.Classes.HerokuDataBase;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,8 @@ import java.util.ArrayList;
  * Use the {@link SearchUsersFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchUsersFragment extends Fragment {
+public class SearchUsersFragment extends Fragment implements HerokuDataBase.DataBaseAllUsersListener {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -42,6 +44,8 @@ public class SearchUsersFragment extends Fragment {
     private RecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<String> dataset = new ArrayList<>();
+
+    HerokuDataBase herokuDataBase;
 
     public SearchUsersFragment() {
         // Required empty public constructor
@@ -74,6 +78,7 @@ public class SearchUsersFragment extends Fragment {
         }
 
         //TEST DATA
+        /*
         dataset.add("JONNE");
         dataset.add("TERO");
         dataset.add("TONI");
@@ -87,7 +92,8 @@ public class SearchUsersFragment extends Fragment {
         dataset.add("JOHN");
         dataset.add("WILLIAM");
         dataset.add("WAYNE");
-        dataset.add("MICHAEL");
+        dataset.add("MICHAEL");*/
+
     }
 
     @Override
@@ -97,13 +103,20 @@ public class SearchUsersFragment extends Fragment {
 
 
         // Inflate the layout for this fragment
+        dataset.clear();
         View parent = inflater.inflate(R.layout.fragment_search_users, container, false);
-        recyclerView = (RecyclerView)  parent.findViewById(R.id.recyclerview);
+        recyclerView = parent.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new RecyclerViewAdapter(getContext(), dataset);
         recyclerView.setAdapter(mAdapter);
+
+        Log.d("IIII", "OnCreateView(): ");
+        herokuDataBase = new HerokuDataBase(getActivity().getApplicationContext());
+        herokuDataBase.setDatabaseAllUsersListener(this);
+        herokuDataBase.getAllUsers();
+
         return parent;
     }
 
@@ -128,8 +141,22 @@ public class SearchUsersFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+
         mListener = null;
         dataset.clear();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void userFound(String email) {
+        Log.d("LLLL", "User: " + email);
+        dataset.add(email);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void allUsersError() {
+
     }
 
     /**

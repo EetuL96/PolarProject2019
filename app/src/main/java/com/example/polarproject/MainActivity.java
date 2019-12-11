@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.widget.Toolbar;
 
 import com.example.polarproject.Adapters.RecyclerViewAdapter;
+import com.example.polarproject.Classes.HerokuDataBase;
 import com.google.android.material.internal.NavigationMenu;
 import com.google.android.material.navigation.NavigationView;
 
@@ -45,6 +46,10 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         NavigationUI.setupWithNavController(navView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         navView.setNavigationItemSelectedListener(this);
+
+        //TEST GETTING ALL USERS
+        //HerokuDataBase herokuDataBase = new HerokuDataBase(this);
+        //herokuDataBase.getAllUsers();
     }
 
     @Override
@@ -114,4 +119,5 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         bundle.putString("name", name);
         navController.navigate(R.id.profileFragment, bundle);
     }
+
 }

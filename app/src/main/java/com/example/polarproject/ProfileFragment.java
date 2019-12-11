@@ -6,10 +6,13 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.polarproject.Classes.HerokuDataBase;
 
 
 /**
@@ -31,6 +34,7 @@ public class ProfileFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -62,6 +66,7 @@ public class ProfileFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+
     }
 
     @Override
@@ -72,6 +77,8 @@ public class ProfileFragment extends Fragment {
         TextView tv = view.findViewById(R.id.textView);
         String name = getArguments().getString("name");
         tv.setText(name);
+
+
         return view;
     }
 
@@ -98,6 +105,7 @@ public class ProfileFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
 
     /**
      * This interface must be implemented by activities that contain this
