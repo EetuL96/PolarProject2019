@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +23,23 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.polarproject.Classes.Route;
+import com.example.polarproject.Classes.RouteDataPoint;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -45,8 +61,16 @@ public class StartRunFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    SensorReceiver receiver = new SensorReceiver();
-    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+    private SensorReceiver receiver = new SensorReceiver();
+    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private ArrayList<RouteDataPoint> dataPointArrayList = new ArrayList<>();
+    double lat;
+    double lng;
+    int bpm;
+    long starttime;
+    double activity;
+    private RequestQueue queue;
 
     public StartRunFragment() {
         // Required empty public constructor
@@ -164,6 +188,52 @@ public class StartRunFragment extends Fragment {
         getContext().startService(new Intent(getContext(), SensorListenerService.class));
     }
 
+    public void saveRoute(ArrayList<RouteDataPoint> arrayList){
+        JSONObject js = new JSONObject();
+        try {
+            js.put("owner", "random");
+            js.put("datetime", "datetime");
+            JSONArray jsonArray = new JSONArray();
+            for (RouteDataPoint datapoint:arrayList) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("lat", datapoint.getLat());
+                jsonObject.put("lng", datapoint.getLng());
+                jsonObject.put("activity", datapoint.getActivity());
+                jsonObject.put("bpm", datapoint.getBpm());
+                jsonObject.put("time", datapoint.getTime());
+                jsonArray.put(jsonObject);
+            }
+            js.put("datapoints", jsonArray);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                    "https://polarapp-oamk.herokuapp.com/routes",
+                    js,
+                    new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d("kimmo", "onResponse: success");
+                            }
+                        }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("kimmo", "onErrorResponse: error");
+                    }
+                }) {
+
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        HashMap<String, String> headers = new HashMap<>();
+                        headers.put("Content-Type", "application/json; charset=utf-8");
+                        return headers;
+                    }
+                };
+        queue.add(jsonObjReq);
+    }
+
     public void stopSensors(){
         Log.d("logi", "stopSensors: ");
         getContext().stopService(new Intent(getContext(), SensorListenerService.class));
@@ -176,13 +246,31 @@ public class StartRunFragment extends Fragment {
             Log.d("logi", "onReceive: ");
             switch (intent.getStringExtra("action")) {
                 case "activity":
-                    //updateActivity(intent.getDoubleExtra("activity", 0));
+                    activity = intent.getDoubleExtra("activity", 0);
                     break;
                 case "location":
-                    //updateLocation(intent.getDoubleExtra("lat", 0), intent.getDoubleExtra("lng", 0), intent.getFloatExtra("accuracy", 0));
+                    lat = intent.getDoubleExtra("lat", 0);
+                    lng = intent.getDoubleExtra("lng", 0);
+                    RouteDataPoint datapoint = new RouteDataPoint();
+                    datapoint.setActivity(activity);
+                    datapoint.setBpm(bpm);
+                    datapoint.setLat(lat);
+                    datapoint.setLng(lng);
+                    if(dataPointArrayList.size()==0){
+                        starttime = System.currentTimeMillis();
+                        datapoint.setTime(0);
+                    }
+                    else{
+                        datapoint.setTime(System.currentTimeMillis() - starttime);
+                    }
+                    //intent.getFloatExtra("accuracy", 0);
                     break;
                 case "hr":
-                    //updateHR(intent.getIntExtra("hr", 0));
+                    bpm = intent.getIntExtra("hr", 0);
+                    if(bpm>120){
+                        Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                        v.vibrate(500);
+                    }
                     break;
             }
         }
