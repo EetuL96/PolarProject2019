@@ -1,12 +1,21 @@
 package com.example.polarproject;
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +45,8 @@ public class StartRunFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    SensorReceiver receiver = new SensorReceiver();
+    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
     public StartRunFragment() {
         // Required empty public constructor
@@ -122,5 +133,58 @@ public class StartRunFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public boolean checkLocationPermission(){
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    public boolean checkBTPermission(){
+        if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, 2);
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    public void startSensors(){
+        Log.d("logi", "startSensors: ");
+        receiver = new SensorReceiver();
+        IntentFilter filter = new IntentFilter("sensor");
+        getContext().registerReceiver(receiver, filter);
+        getContext().startService(new Intent(getContext(), SensorListenerService.class));
+    }
+
+    public void stopSensors(){
+        Log.d("logi", "stopSensors: ");
+        getContext().stopService(new Intent(getContext(), SensorListenerService.class));
+        getContext().unregisterReceiver(receiver);
+    }
+
+    private class SensorReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("logi", "onReceive: ");
+            switch (intent.getStringExtra("action")) {
+                case "activity":
+                    //updateActivity(intent.getDoubleExtra("activity", 0));
+                    break;
+                case "location":
+                    //updateLocation(intent.getDoubleExtra("lat", 0), intent.getDoubleExtra("lng", 0), intent.getFloatExtra("accuracy", 0));
+                    break;
+                case "hr":
+                    //updateHR(intent.getIntExtra("hr", 0));
+                    break;
+            }
+        }
     }
 }
