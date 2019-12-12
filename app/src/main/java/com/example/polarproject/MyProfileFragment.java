@@ -1,6 +1,8 @@
 package com.example.polarproject;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -9,54 +11,38 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.polarproject.Adapters.MyProfileFragmentStateAdapter;
+import com.example.polarproject.Classes.PictureInterface;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MyProfileFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MyProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class MyProfileFragment extends Fragment implements TabLayoutMediator.TabConfigurationStrategy {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+public class MyProfileFragment extends Fragment implements TabLayoutMediator.TabConfigurationStrategy, PictureInterface {
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private User user;
-
     private OnFragmentInteractionListener mListener;
-
     MyProfileFragmentStateAdapter fragmentStateAdapter;
     ViewPager2 viewPager;
+    CircleImageView imageProfile;
+
 
     public MyProfileFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MyProfileFragment newInstance(String param1, String param2) {
         MyProfileFragment fragment = new MyProfileFragment();
         Bundle args = new Bundle();
@@ -83,6 +69,21 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
         View  rootView = inflater.inflate(R.layout.fragment_my_profile, container, false);
         TextView textViewName = rootView.findViewById(R.id.textViewName);
         textViewName.setText(user.getFirstName() + " " + user.getLastName());
+        imageProfile = rootView.findViewById(R.id.imageProfile);
+
+        MainActivity activity = (MainActivity) getActivity();
+        activity.setPictureInterface(this);
+
+
+        imageProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("HOHOHO", "My Profile Image Clicked");
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Pick Profile Picture"), 1);
+            }
+        });
         return rootView;
 
     }
@@ -105,7 +106,6 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -142,9 +142,14 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
         }
     }
 
+    @Override
+    public void getData(Bitmap pic) {
+        Log.d("WEWEWE", "MyProfileFragment getData()");
+        imageProfile.setImageBitmap(pic);
+    }
+
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

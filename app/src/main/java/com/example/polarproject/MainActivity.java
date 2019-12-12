@@ -13,18 +13,27 @@ import androidx.navigation.ui.NavigationUI;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.polarproject.Adapters.RecyclerViewAdapter;
 import com.example.polarproject.Classes.HerokuDataBase;
+import com.example.polarproject.Classes.PictureInterface;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.internal.NavigationMenu;
 import com.google.android.material.navigation.NavigationView;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+
 
 public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener, FollowingFragment.OnFragmentInteractionListener, RecyclerViewAdapter.ListenerInterface, NavController.OnDestinationChangedListener {
 
@@ -32,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
     private DrawerLayout drawerLayout;
     AppBarConfiguration appBarConfiguration;
     BottomNavigationView bottomNavigationView;
+    PictureInterface pictureInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +81,11 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
             }
         });
         navController.addOnDestinationChangedListener(this);
+    }
+
+    public void setPictureInterface(PictureInterface pictureInterface)
+    {
+        this.pictureInterface = pictureInterface;
     }
 
     @Override
@@ -159,4 +174,30 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
             bottomNavigationView.setVisibility(View.GONE);
         }
     }
+
+    //Used when user click profile pic on MyProfileFragment
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("HYHYHY", "onActivityResult");
+        if (resultCode == RESULT_OK)
+        {
+            try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                pictureInterface.getData(selectedImage);
+                Log.d("HYHYHY", "Fine");
+
+            }
+            catch (FileNotFoundException e)
+            {
+                e.printStackTrace();
+                Log.d("HYHYHY", e.getMessage());
+                Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT);
+            }
+
+        }
+    }
+
 }
