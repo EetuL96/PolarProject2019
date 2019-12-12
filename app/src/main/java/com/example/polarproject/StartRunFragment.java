@@ -224,6 +224,7 @@ public class StartRunFragment extends Fragment {
             }
             js.put("datapoints", jsonArray);
             js.put("distance", distance);
+            js.put("owner", ((Application) getActivity().getApplication()).getUser().getID());
         }
         catch (JSONException e) {
             e.printStackTrace();
