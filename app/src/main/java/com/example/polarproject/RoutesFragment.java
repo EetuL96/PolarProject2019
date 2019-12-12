@@ -131,7 +131,7 @@ public class RoutesFragment extends Fragment {
                                 JSONObject jsObject = response.getJSONObject(i);
                                 route.setId(jsObject.getString("_id"));
                                 route.setDate(jsObject.getString("date"));
-                                route.setDistance(jsObject.getInt("distance"));
+                                route.setDistance(jsObject.getDouble("distance"));
                                 routes.add(route);
                             }
                             routeListAdapter = new RouteListAdapter(getContext(), routes);

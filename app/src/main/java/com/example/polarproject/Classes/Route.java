@@ -3,7 +3,7 @@ package com.example.polarproject.Classes;
 public class Route {
 
     private String date;
-    private int distance;
+    private double distance;
     private String id;
 
     public String getDate() {
@@ -14,11 +14,11 @@ public class Route {
         this.date = date;
     }
 
-    public int getDistance() {
+    public double getDistance() {
         return distance;
     }
 
-    public void setDistance(int distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 
