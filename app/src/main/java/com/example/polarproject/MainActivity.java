@@ -3,6 +3,8 @@ package com.example.polarproject;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -12,7 +14,10 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -39,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
     private NavController navController;
     private DrawerLayout drawerLayout;
+    private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     AppBarConfiguration appBarConfiguration;
     BottomNavigationView bottomNavigationView;
     PictureInterface pictureInterface;
@@ -126,8 +132,10 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
             }
 
             case R.id.drawer_new_run: {
-                navController.navigate(R.id.startRunFragment);
-                drawerLayout.closeDrawer(GravityCompat.START);
+                if(checkLocationPermission()&&checkBTPermission()){
+                    navController.navigate(R.id.startRunFragment);
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }
                 break;
             }
             case R.id.drawer_routes: {
@@ -161,6 +169,27 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         Bundle bundle = new Bundle();
         bundle.putSerializable("name", user);
         navController.navigate(R.id.profileFragment, bundle);
+    }
+
+    public boolean checkLocationPermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    public boolean checkBTPermission(){
+        if (bluetoothAdapter != null && !bluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, 2);
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     @Override
@@ -202,5 +231,4 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
         }
     }
-
 }

@@ -181,11 +181,17 @@ public class SensorListenerService extends Service implements SensorEventListene
             double hpFilter = Math.sqrt(Math.pow(hpx, 2) + Math.pow(hpy, 2) + Math.pow(hpz, 2));
 
             //Save to arraylist for later use
-            if(activityList.size()==listSize){
-                activityList.set(pointer, hpFilter);
+            try{
+                if(activityList.size()==listSize){
+                    activityList.set(pointer, hpFilter);
+                }
+                else{
+                    activityList.add(hpFilter);
+                }
             }
-            else{
-                activityList.add(hpFilter);
+            catch (Exception e){
+                e.printStackTrace();
+                activityList = new ArrayList<>(listSize);
             }
 
             //Filtering creates latency so we send updates only when arraylist has updated
