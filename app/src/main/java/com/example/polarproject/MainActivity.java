@@ -122,13 +122,13 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         MainActivity.this.startActivity(intent);
         MainActivity.this.finish();
     }
-
+  
     @Override
     public void newRoute() {
         navController.navigate(R.id.startRunFragment);
         drawerLayout.closeDrawer(GravityCompat.START);
     }
-
+  
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 }
                 break;
             }
+
             case R.id.drawer_routes: {
                 navController.navigate(R.id.routesFragment);
                 drawerLayout.closeDrawer(GravityCompat.START);

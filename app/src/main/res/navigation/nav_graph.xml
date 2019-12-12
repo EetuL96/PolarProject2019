@@ -29,7 +29,7 @@
     <fragment
         android:id="@+id/startRunFragment"
         android:name="com.example.polarproject.StartRunFragment"
-        android:label="Start Run"
+        android:label="New Route"
         tools:layout="@layout/fragment_start_run">
     </fragment>
 
