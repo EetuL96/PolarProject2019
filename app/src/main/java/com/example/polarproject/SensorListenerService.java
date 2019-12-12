@@ -66,7 +66,7 @@ public class SensorListenerService extends Service implements SensorEventListene
         monitorHR();
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         try{
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, locationListener);
             Log.d("kimmo", "SensorListenerService: Locationupdates requested");
         }
         catch (SecurityException e){
