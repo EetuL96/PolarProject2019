@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -14,8 +15,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.polarproject.Adapters.RouteListAdapter;
 import com.example.polarproject.Classes.Route;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -39,10 +50,12 @@ public class RoutesFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-
     private ArrayList<Route> routes = new ArrayList<>();
     private RouteListAdapter routeListAdapter;
+    private ConstraintLayout newRouteButton;
     ListView lv = null;
+    RequestQueue mQueue;
+
 
     public RoutesFragment() {
         // Required empty public constructor
@@ -66,6 +79,7 @@ public class RoutesFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,29 +95,71 @@ public class RoutesFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_routes, container, false);
 
-        Route route1 = new Route("Route 1");
+        /*Route route1 = new Route("Route 1");
         Route route2 = new Route("Route 2");
         Route route3 = new Route("Route 3");
         routes.add(route1);
         routes.add(route2);
-        routes.add(route3);
-        routeListAdapter = new RouteListAdapter(getContext(), routes);
-        lv = (ListView)rootView.findViewById(R.id.listViewRoutes);
-        lv.setAdapter(routeListAdapter);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
+        routes.add(route3);*/
+        mQueue = Volley.newRequestQueue(getContext());
 
-                Route route = (Route) parent.getItemAtPosition(position);
-                Log.d("listViewRoutes", route.getName());
+        lv = rootView.findViewById(R.id.listViewRoutes);
+        newRouteButton = rootView.findViewById(R.id.newRouteButton);
+        newRouteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
 
+        getMyRoutes(((Application) getActivity().getApplication()).getUser().getID());
+        return rootView;
+    }
+
+    public void getMyRoutes(String myId)
+    {
+        String url = "https://polarapp-oamk.herokuapp.com/routes/owner/" + myId;
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try
+                        {
+                            for (int i = 0; i < response.length(); i++) {
+                                Route route = new Route();
+                                JSONObject jsObject = response.getJSONObject(i);
+                                route.setId(jsObject.getString("_id"));
+                                route.setDate(jsObject.getString("date"));
+                                route.setDistance(jsObject.getInt("distance"));
+                                routes.add(route);
+                            }
+                            routeListAdapter = new RouteListAdapter(getContext(), routes);
+                            lv.setAdapter(routeListAdapter);
+                            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                public void onItemClick(AdapterView<?> parent, View view,
+                                                        int position, long id) {
+
+                                    Route route = (Route) parent.getItemAtPosition(position);
+                                    mListener.openRoute(route.getId());
                 /*Bundle bundle = new Bundle();
                 bundle.putSerializable("route",route);
                 Navigation.findNavController(view).navigate(xxx, bundle);
                 players.clear();*/
-            }
-        });
-        return rootView;
+                                }
+                            });
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                });
+        mQueue.add(jsonArrayRequest);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -143,5 +199,6 @@ public class RoutesFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+        void openRoute(String routeId);
     }
 }

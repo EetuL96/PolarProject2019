@@ -2,6 +2,7 @@ package com.example.polarproject.Adapters;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,12 @@ import androidx.annotation.RequiresApi;
 import com.example.polarproject.Classes.Route;
 import com.example.polarproject.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class RouteListAdapter extends ArrayAdapter<Route> {
 
@@ -34,7 +40,10 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
             layoutId = R.layout.list_item_routes;
             convertView = LayoutInflater.from(getContext()).inflate(layoutId, parent, false);
         }
-        TextView textViewName = convertView.findViewById(R.id.textViewRouteName);
+        TextView textViewDate = convertView.findViewById(R.id.textViewRouteDate);
+        textViewDate.setText(route.getDate());
+        TextView textViewDistance = convertView.findViewById(R.id.textViewRouteDistance);
+        textViewDistance.setText(route.getDistance()+" m");
         return convertView;
     }
 
