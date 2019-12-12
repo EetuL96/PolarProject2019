@@ -117,10 +117,14 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
     @Override
     public void openRoute(String routeId) {
-        Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-        intent.putExtra("routeId", routeId);
-        MainActivity.this.startActivity(intent);
-        MainActivity.this.finish();
+        //Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+        //intent.putExtra("routeId", routeId);
+        //MainActivity.this.startActivity(intent);
+        //MainActivity.this.finish();
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("routeId", routeId);
+        navController.navigate(R.id.mapsActivity, bundle);
     }
   
     @Override
