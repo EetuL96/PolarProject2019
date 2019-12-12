@@ -81,7 +81,8 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
                 Log.d("HOHOHO", "My Profile Image Clicked");
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent, "Pick Profile Picture"), 1);
+                //startActivityForResult(Intent.createChooser(intent, "Pick Profile Picture"), 5);
+                getActivity().startActivityForResult(intent, 3);
             }
         });
         return rootView;

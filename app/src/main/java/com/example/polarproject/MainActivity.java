@@ -220,8 +220,23 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("HYHYHY", "onActivityResult");
-        if (resultCode == RESULT_OK)
+
+        if (requestCode == 1)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                Log.d("HYHYHY","Location permission ok");
+            }
+        }
+        else if (requestCode == 2)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                Log.d("HYHYHY","Bluetooth permission ok");
+            }
+        }
+
+        else if (requestCode == 3)
         {
             try {
                 final Uri imageUri = data.getData();
@@ -237,7 +252,6 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 Log.d("HYHYHY", e.getMessage());
                 Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT);
             }
-
         }
     }
 }
