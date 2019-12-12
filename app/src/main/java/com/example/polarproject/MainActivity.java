@@ -238,20 +238,24 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
         else if (requestCode == 3)
         {
-            try {
-                final Uri imageUri = data.getData();
-                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                pictureInterface.getData(selectedImage);
-                Log.d("HYHYHY", "Fine");
-
-            }
-            catch (FileNotFoundException e)
+            if (resultCode == RESULT_OK)
             {
-                e.printStackTrace();
-                Log.d("HYHYHY", e.getMessage());
-                Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT);
+                try {
+                    final Uri imageUri = data.getData();
+                    final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    pictureInterface.getData(selectedImage);
+                    Log.d("HYHYHY", "Fine");
+
+                }
+                catch (FileNotFoundException e)
+                {
+                    e.printStackTrace();
+                    Log.d("HYHYHY", e.getMessage());
+                    Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT);
+                }
             }
+
         }
     }
 }
