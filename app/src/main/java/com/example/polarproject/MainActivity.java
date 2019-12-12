@@ -35,7 +35,7 @@ import java.io.InputStream;
 
 
 
-public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener, FollowingFragment.OnFragmentInteractionListener, RecyclerViewAdapter.ListenerInterface, NavController.OnDestinationChangedListener {
+public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener, FollowingFragment.OnFragmentInteractionListener, RecyclerViewAdapter.ListenerInterface, NavController.OnDestinationChangedListener, RoutesRecycleFragment.OnFragmentInteractionListener {
 
     private NavController navController;
     private DrawerLayout drawerLayout;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
 
         appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.searchUsersFragment)
+                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.createMapFragment, R.id.searchUsersFragment, R.id.followingFragment, R.id.routesRecycleFragment)
                         .setDrawerLayout(drawerLayout)
                         .build();
 
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         NavigationUI.setupWithNavController(navView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         navView.setNavigationItemSelectedListener(this);
+
         bottomNavigationView = findViewById(R.id.bottom_nav);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         bottomNavigationView.setVisibility(View.GONE);
@@ -71,9 +72,11 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 {
                     case R.id.bottom_stats:
                         Log.d("HSHSHS", "Bottom Navigation Stats Clicked!");
+                        //navController.navigate(R.id.action_routesRecycleFragment_to_profileFragment);
                         break;
                     case R.id.botton_routes:
                         Log.d("HSHSHS", "Bottom Navigation Routes Clicked!");
+                        //navController.navigate(R.id.action_profileFragment_to_routesRecycleFragment);
                         break;
                 }
                 return false;
@@ -105,14 +108,6 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
     }
 
-    @Override
-    public void openRoute(String routeId) {
-        Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-        intent.putExtra("routeId", routeId);
-        MainActivity.this.startActivity(intent);
-        MainActivity.this.finish();
-    }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -126,6 +121,11 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
             case R.id.drawer_new_run: {
                 navController.navigate(R.id.startRunFragment);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                break;
+            }
+            case R.id.drawer_create_map: {
+                navController.navigate(R.id.createMapFragment);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             }
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
     public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
         Log.d("ASAS", "OnDestinationChanged");
         Log.d("ASAS", destination.getNavigatorName());
-        if (destination == navController.getGraph().findNode(R.id.profileFragment))
+        if (destination == navController.getGraph().findNode(R.id.profileFragment) || destination == navController.getGraph().findNode(R.id.routesRecycleFragment))
         {
             Log.d("ASAS", "Profile Fragment!");
             bottomNavigationView.setVisibility(View.VISIBLE);

@@ -38,16 +38,31 @@
         android:name="com.example.polarproject.SearchUsersFragment"
         android:label="Search Users"
         tools:layout="@layout/fragment_search_users" />
-    <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.polarproject.ProfileFragment"
-        tools:layout="@layout/fragment_profile"
-        android:label="Profile">
-    </fragment>
+
     <fragment
         android:id="@+id/followingFragment"
         android:name="com.example.polarproject.FollowingFragment"
         android:label="Following"
         tools:layout="@layout/fragment_following" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.polarproject.ProfileFragment"
+        tools:layout="@layout/fragment_profile"
+        android:label="Profile">
+        <action
+            android:id="@+id/action_profileFragment_to_routesRecycleFragment"
+            app:destination="@id/routesRecycleFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/routesRecycleFragment"
+        android:name="com.example.polarproject.RoutesRecycleFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_routes_recycle" >
+        <action
+            android:id="@+id/action_routesRecycleFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 
 </navigation>
