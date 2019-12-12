@@ -65,6 +65,8 @@ public class StartRunFragment extends Fragment {
     private Spinner IDSpinner = null;
     private TextView textViewBPM = null;
     private TextView textViewActivity = null;
+    private TextView textViewASpeed = null;
+    private TextView textViewDistance = null;
     private ArrayAdapter IDAdapter = null;
     private ArrayList<RouteDataPoint> dataPointArrayList = new ArrayList<>();
     private ArrayList<String> IDArrayList = new ArrayList<>();
@@ -116,6 +118,8 @@ public class StartRunFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_start_run, container, false);
         textViewBPM = view.findViewById(R.id.textViewBPM);
         textViewActivity = view.findViewById(R.id.textViewActivity);
+        textViewASpeed = view.findViewById(R.id.textViewASpeed);
+        textViewDistance = view.findViewById(R.id.textViewDistance);
         IDSpinner = view.findViewById(R.id.spinnerID);
         IDAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, IDArrayList);
         IDSpinner.setAdapter(IDAdapter);
@@ -279,7 +283,7 @@ public class StartRunFragment extends Fragment {
                 case "activity":
                     Log.d("logi", "onReceive: activity");
                     activity = intent.getDoubleExtra("activity", 0);
-                    textViewActivity.setText(String.format("%.2f", activity));
+                    textViewActivity.setText(String.format("%.2f", activity) + " activity");
                     break;
                 case "location":
                     Log.d("logi", "onReceive: location");
@@ -304,6 +308,9 @@ public class StartRunFragment extends Fragment {
                             distance += calcDistance(oldLat, lat, oldLng, lng);
                             Log.d("kimmo", "distance: " + distance);
                         }
+                        textViewDistance.setText(String.format("%.2f", distance) + " km");
+                        double speed = distance/dataPointArrayList.get(dataPointArrayList.size()-1).getTime()*1000;
+                        textViewASpeed.setText(String.format("%.2f", speed) + " km/h");
                     }
                     break;
                 case "hr":
@@ -323,9 +330,14 @@ public class StartRunFragment extends Fragment {
                     if(IDSpinner.getSelectedItem()!=null){
                         if(IDSpinner.getSelectedItem().toString().equals(id)){
                             textViewBPM.setText(bpm + " bpm");
-                            if(bpm>120){
-                                Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                                v.vibrate(500);
+                            if(bpm>160){
+                                try{
+                                    Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                                    v.vibrate(500);
+                                }
+                                catch (Exception e){
+
+                                }
                             }
                         }
                     }

@@ -1,10 +1,16 @@
 package com.example.polarproject;
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -49,6 +55,7 @@ public class RoutesFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private OnFragmentInteractionListener mListener;
     private ArrayList<Route> routes = new ArrayList<>();
     private RouteListAdapter routeListAdapter;
@@ -108,7 +115,9 @@ public class RoutesFragment extends Fragment {
         newRouteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.newRoute();
+                if(checkLocationPermission()&&checkBTPermission()){
+                    mListener.newRoute();
+                }
             }
         });
 
@@ -187,6 +196,27 @@ public class RoutesFragment extends Fragment {
         mListener = null;
     }
 
+
+    public boolean checkLocationPermission(){
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    public boolean checkBTPermission(){
+        if (bluetoothAdapter != null && !bluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, 2);
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
