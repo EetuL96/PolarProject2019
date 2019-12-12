@@ -2,6 +2,8 @@ package com.example.polarproject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -23,6 +25,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
     AppBarConfiguration appBarConfiguration;
     BottomNavigationView bottomNavigationView;
     PictureInterface pictureInterface;
+    boolean drawerIsOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +73,44 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         navView.setNavigationItemSelectedListener(this);
 
+
+        //TEST
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+
+                Log.d("GTGTGT", "Drawer opened");
+                ActionBar actionBar = getSupportActionBar();
+                String title = actionBar.getTitle().toString();
+                Log.d("GTGTGT", title);
+                drawerIsOpen = true;
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+                Log.d("GTGTGT", "Drawer closed");
+                drawerIsOpen = false;
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+
         bottomNavigationView = findViewById(R.id.bottom_nav);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         bottomNavigationView.setVisibility(View.GONE);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
                 switch (item.getItemId())
                 {
                     case R.id.bottom_stats:
@@ -90,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         });
         navController.navigate(R.id.routesFragment);
         navController.addOnDestinationChangedListener(this);
+
+
     }
 
     public void setPictureInterface(PictureInterface pictureInterface)
@@ -109,6 +148,8 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         this.finish();
         System.exit(0);
     }
+
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -135,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
   
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        Log.d("FRFRFR", menuItem.toString());
         switch (menuItem.getItemId()) {
 
             case R.id.drawer_myprofile: {
@@ -182,6 +224,25 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         Bundle bundle = new Bundle();
         bundle.putSerializable("name", user);
         navController.navigate(R.id.profileFragment, bundle);
+    }
+
+    public void closeDrawer()
+    {
+        drawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (drawerIsOpen)
+        {
+            closeDrawer();
+            return true;
+        }
+        else
+        {
+            return super.onOptionsItemSelected(item);
+        }
+
     }
 
     public boolean checkLocationPermission(){
