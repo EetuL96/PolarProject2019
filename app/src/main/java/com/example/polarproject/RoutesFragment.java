@@ -108,6 +108,7 @@ public class RoutesFragment extends Fragment {
         newRouteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mListener.newRoute();
             }
         });
 
@@ -200,5 +201,6 @@ public class RoutesFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
         void openRoute(String routeId);
+        void newRoute();
     }
 }
