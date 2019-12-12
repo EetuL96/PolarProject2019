@@ -134,7 +134,9 @@ public class StartRunFragment extends Fragment {
                     running = false;
                     button.setText("Start");
                     stopSensors();
-                    saveRoute(dataPointArrayList);
+                    if(dataPointArrayList.size()!=0){
+                        saveRoute(dataPointArrayList);
+                    }
                 }
             }
         });
