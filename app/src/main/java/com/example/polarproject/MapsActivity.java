@@ -44,7 +44,6 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    //ArrayList markerPoints= new ArrayList();
     RequestQueue mQueue;
     String routeId;
     ArrayList<RouteDataPoint> dataPoints = new ArrayList<>();
@@ -67,7 +66,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         getRoute();
 
         /*mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -126,15 +124,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public void onResponse(JSONObject jsonObject) {
                         try
                         {
-                            //Log.d("ROUTETEST", jsonObject.toString()) ;
                             try{
                                 JSONArray array = jsonObject.getJSONArray("datapoints");
-                                //Log.d("ROUTETEST", array.toString()) ;
 
                                 for(int i = 0; i< array.length() ;i++){
                                     JSONObject jObject = array.getJSONObject(i);
-                                    //Log.d("ROUTETEST", jObject.toString()) ;
-                                    //Log.d("ROUTETEST", Double.toString(jObject.getDouble("lat")));
                                     RouteDataPoint dataPoint = new RouteDataPoint();
                                     dataPoint.setTime(0);
                                     dataPoint.setLat(jObject.getDouble("lat"));
@@ -142,37 +136,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     dataPoint.setActivity(jObject.getDouble("activity"));
                                     dataPoint.setBpm(jObject.getInt("bpm"));
                                     dataPoints.add(dataPoint);
-                                    /*JSONArray jArray = jObject.getJSONArray("Meals");
-                                    StringBuilder strBuilder = new StringBuilder();
-                                    for(int j = 0; j < jArray.length(); j++){
-                                        JSONObject jObject2 = jArray.getJSONObject(j);
-                                        String str = jObject2.getString("Name");
-                                        strBuilder.append(str + "\n");
-                                    }
-                                    String meal = strBuilder.toString();
-                                    if(!(meal.equals(""))){
-                                        arrayList.add(strBuilder.toString());
-                                    }*/
                                 }
                                 for (int i = 1; i < dataPoints.size() ; i++) {
-                                    //Log.d("ROUTETEST",  "i v size: " + i + " " + dataPoints.size());
                                     int gValue = 255;
                                     int rValue = 255;
                                     double highBpm = 120;
                                     double lowBpm = 60;
                                     double bpm = dataPoints.get(i).getBpm();
-                                    //Double scaleValue = (Double.valueOf(i) - 0.5) / (dataPoints.size() - 1);
                                     Double scaleValue = (bpm - lowBpm) / (highBpm - lowBpm);
                                     scaleValue = Math.min(1.0, scaleValue);
                                     scaleValue = Math.max(0.0, scaleValue);
-                                    Log.d("ROUTETEST", scaleValue.toString());
                                     if (scaleValue > 0.5) {
                                         gValue -= (255 * ((scaleValue - 0.5) * 2));
                                     } else if (scaleValue < 0.5) {
                                         rValue -= (255 * ((0.5 - scaleValue) * 2));
                                     }
-                                    Log.d("ROUTETEST", "rgb: "+  rValue + " " + gValue);
-
                                     int lineColor = Color.rgb(rValue, gValue, 0);
                                     Polyline line = mMap.addPolyline(new PolylineOptions()
                                             .add(new LatLng(dataPoints.get(i-1).getLat(), dataPoints.get(i-1).getLng()), new LatLng(dataPoints.get(i).getLat(), dataPoints.get(i).getLng()))
@@ -181,13 +159,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 }
                                 double avgLat = (dataPoints.get(0).getLat() + dataPoints.get(dataPoints.size() - 1).getLat()) / 2;
                                 double avgLng = (dataPoints.get(0).getLng() + dataPoints.get(dataPoints.size() - 1).getLng()) / 2;
-
                                 LatLng startLocation = new LatLng(avgLat, avgLng);
-                                //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLocation, 6));
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLocation, 5));
                             }catch (Exception e){
                             }
-                            //boolean auth = jsonObject.getBoolean("auth");
                         }
                         catch (Exception e)
                         {
