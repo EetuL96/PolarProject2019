@@ -54,14 +54,35 @@ public class HerokuDataBase {
         callbackInterface4 = listener;
     }
 
+    public void setDatabaseFollowListener(DatabaseFollowUserListener listener)
+    {
+        callbackInterface5 = listener;
+    }
+
+    public void setDatabaseGetFollowedListener(DatabaseGetFollowedUsersListener listener)
+    {
+        callbackInterface6 = listener;
+    }
+
+    public interface DatabaseGetFollowedUsersListener
+    {
+        void userGetFollowed(User user);
+        void userGetFollowError();
+    }
+
+    public interface DatabaseFollowUserListener
+    {
+        void userFollowed();
+        void userFollowError();
+    }
     public interface DataBaseSearchUserListener
     {
-        void userSearchFound(String email);
+        void userSearchFound(User user);
         void userSeacrhNotFound();
     }
     public interface DataBaseAllUsersListener
     {
-        void userFound(String email);
+        void userFound(User user);
         void allUsersError();
     }
 
@@ -78,14 +99,26 @@ public class HerokuDataBase {
         void registerSuccess();
         void registerError();
     }
+
+    public void setDatabaseGetAllUserAndCheckIfFollowedListener(DatabaseGetAllUserAndCheckIfFollowedListener listener)
+    {
+        this.callbackInterface7 = listener;
+    }
+    public interface DatabaseGetAllUserAndCheckIfFollowedListener
+    {
+        void getUserAndCheckIfFollowed(User user);
+    }
     DataBaseLoginListener callbackInterface = null;
     DatabaseRegisterListener callbackInterface2 = null;
     DataBaseAllUsersListener callbackInterface3 = null;
     DataBaseSearchUserListener callbackInterface4 = null;
+    DatabaseFollowUserListener callbackInterface5 = null;
+    DatabaseGetFollowedUsersListener callbackInterface6 = null;
+    DatabaseGetAllUserAndCheckIfFollowedListener callbackInterface7 = null;
 
     public void getUserByEmail(String email, String token)
     {
-        String url = " https://polarapp-oamk.herokuapp.com/users/email/" + email;
+        String url = "https://polarapp-oamk.herokuapp.com/users/email/" + email;
         JSONObject js = new JSONObject();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -176,7 +209,6 @@ public class HerokuDataBase {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //Log.d("LOL", error.getMessage().toString());
                         callbackInterface.loginError();
                     }
                 });
@@ -236,23 +268,14 @@ public class HerokuDataBase {
                             while (i < response.length())
                             {
                                 JSONObject jsonObject = response.getJSONObject(i);
+                                String id = jsonObject.getString("_id");
                                 String email = jsonObject.getString("email");
-                                Log.d("GGGGG", email);
-                                callbackInterface3.userFound(email);
+                                User user = new User();
+                                user.setID(id);
+                                user.setEmail(email);
+                                callbackInterface3.userFound(user);
                                 i++;
                             }
-                            /*
-                            String id = jsonObject.getString("_id");
-                            String email = jsonObject.getString("email");
-                            String firstname = jsonObject.getString("firstname");
-                            String lastname = jsonObject.getString("lastname");
-
-                            User user = new User();
-                            user.setEmail(email);
-                            user.setID(id);
-                            user.setFirstName(firstname);
-                            user.setLastName(lastname);
-                            Log.d("GGGGG", firstname + lastname);*/
                         }
                         catch (JSONException e)
                         {
@@ -285,15 +308,11 @@ public class HerokuDataBase {
                             Log.d("RRRR", response.toString());
 
                             String email = response.getString("email");
-                            callbackInterface4.userSearchFound(email);
-                            //Log.d("RRRR", "User fond: " + email);
-
-                            //User user = new User();
-                            //user.setID(id);
-                            //user.setFirstName(firstname);
-                            //user.setLastName(lastname);
-
-                            //callbackInterface.userByEmailSuccess(user);
+                            String id = response.getString("_id");
+                            User user = new User();
+                            user.setEmail(email);
+                            user.setID(id);
+                            callbackInterface4.userSearchFound(user);
                         }
                         catch (JSONException e)
                         {
@@ -312,6 +331,133 @@ public class HerokuDataBase {
                 });
         mQueue.add(jsonObjectRequest);
         Log.d("LOL", "FINISH");
+    }
+
+    public void createNewFollow(String ownId, String targetId)
+    {
+        JSONObject js = new JSONObject();
+        try {
+            js.put("myId", ownId);
+            js.put("targetId", targetId);
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String url = "https://polarapp-oamk.herokuapp.com/follows";
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.POST,url, js,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //callbackInterface2.registerSuccess();
+                        Log.d("BBBB", "New Follow Created!");
+                        callbackInterface5.userFollowed();
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //callbackInterface2.registerError();
+                Log.d("BBBB", error.getMessage());
+                callbackInterface5.userFollowError();
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        mQueue.add(jsonObjReq);
+    }
+
+    public void getFollowedUsers(String ownId)
+    {
+        String url = "https://polarapp-oamk.herokuapp.com/follows/myId/" + ownId + "/users";
+        Log.d("XDXD", ownId);
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try
+                        {
+                            int i = 0;
+                            while (i < response.length())
+                            {
+                                JSONObject jsonObject = response.getJSONObject(i);
+                                String id = jsonObject.getString("_id");
+                                String email = jsonObject.getString("email");
+                                User user = new User();
+                                user.setID(id);
+                                user.setEmail(email);
+                                callbackInterface6.userGetFollowed(user);
+                                Log.d("11111", user.getEmail());
+                                i++;
+                            }
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                            Log.d("11111", e.toString());
+                            callbackInterface6.userGetFollowError();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("11111", error.toString());
+                        callbackInterface6.userGetFollowError();
+                    }
+                });
+        mQueue.add(jsonArrayRequest);
+    }
+
+    public void getAllUsersAndCheckIfFollowed(String ownId)
+    {
+        String url = "https://polarapp-oamk.herokuapp.com/users/followCheck/" + ownId;
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try
+                        {
+                            int i = 0;
+                            while (i < response.length())
+                            {
+                                JSONObject jsonObject = response.getJSONObject(i);
+                                String id = jsonObject.getString("_id");
+                                String email = jsonObject.getString("email");
+                                boolean followed = jsonObject.getBoolean("followed");
+                                User user = new User();
+                                user.setID(id);
+                                user.setEmail(email);
+                                user.setIsFollowed(followed);
+                                if (followed)
+                                {
+                                    Log.d("VBVB", "Following: " + user.getEmail());
+                                }
+                                callbackInterface7.getUserAndCheckIfFollowed(user);
+                                i++;
+                            }
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                            Log.d("VBVB", e.toString());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("VBVB", error.toString());
+                    }
+                });
+        mQueue.add(jsonArrayRequest);
     }
 
 

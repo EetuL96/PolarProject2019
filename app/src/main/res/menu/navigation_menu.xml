@@ -14,13 +14,10 @@
         android:id="@+id/group2">
         <item
             android:id="@+id/drawer_new_run"
-            android:title="Start Run" />
-        <item
-            android:id="@+id/drawer_create_map"
-            android:title="Create New Route" />
+            android:title="New Route" />
         <item
             android:id="@+id/drawer_routes"
-            android:title="Saved Routes" />
+            android:title="My Routes" />
 
 
     </group>

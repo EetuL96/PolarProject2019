@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.polarproject.R;
+import com.example.polarproject.User;
 
 import org.w3c.dom.Text;
 
@@ -19,13 +20,13 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
-    private ArrayList<String> list = new ArrayList<>();
+    private ArrayList<User> userList = new ArrayList<>();
     private Context context;
     private ListenerInterface callbackInterface = null;
 
     public interface ListenerInterface
     {
-        void itemClicked(String name);
+        void itemClicked(User user);
     }
 
 
@@ -34,19 +35,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     {
         public TextView textView;
         public RelativeLayout parentLayout;
+        public TextView textViewIsFollowed;
 
         public MyViewHolder(View itemView){
             super(itemView);
             textView = itemView.findViewById(R.id.textView2);
+            textViewIsFollowed = itemView.findViewById(R.id.textViewFollowed);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
     }
 
-    public RecyclerViewAdapter(Context context, ArrayList<String> list)
+    public RecyclerViewAdapter(Context context, ArrayList<User> list)
     {
         this.context = context;
         callbackInterface = (ListenerInterface) context;
-        this.list = list;
+        this.userList = list;
     }
 
     @Override
@@ -60,13 +63,31 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position)
     {
-        holder.textView.setText(list.get(position));
+        User user = userList.get(position);
+
+        try
+        {
+            if (user.getIsFollowed())
+            {
+                holder.textViewIsFollowed.setText("Followed");
+            }
+            else
+            {
+                holder.textViewIsFollowed.setText("");
+            }
+        }
+        catch (Exception e)
+        {
+            holder.textViewIsFollowed.setText("");
+        }
+
+        holder.textView.setText(user.getEmail());
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name = list.get(position);
-                Log.d("LLL", list.get(position) + "Clicked!");
-                callbackInterface.itemClicked(name);
+                User user = userList.get(position);
+                Log.d("LLL", userList.get(position).getEmail() + "Clicked!");
+                callbackInterface.itemClicked(user);
             }
         });
     }
@@ -74,6 +95,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public int getItemCount()
     {
-        return list.size();
+        return userList.size();
     }
 }
