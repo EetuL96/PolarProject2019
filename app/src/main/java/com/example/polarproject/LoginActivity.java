@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,8 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
     Button buttonLogin;
     EditText editTextEmail;
     EditText editTextPassword;
+    ProgressBar progressBar;
+
     HerokuDataBase herokuDataBase = null;
 
     @Override
@@ -44,6 +47,9 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         buttonLogin.setOnClickListener(this);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
+
         herokuDataBase = new HerokuDataBase(this);
         herokuDataBase.setDatabaseLoginListener(this);
     }
@@ -83,6 +89,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
             String password = editTextPassword.getText().toString();
 
             herokuDataBase.loginToServer(email, password);
+            progressBar.setVisibility(View.VISIBLE);
         }
     }
 
@@ -98,11 +105,14 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
     @Override
     public void userByEmailFailed() {
         buttonLogin.setEnabled(true);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void userByEmailError() {
+
         buttonLogin.setEnabled(true);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -110,5 +120,6 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         Toast toast = Toast.makeText(LoginActivity.this, "Check password and email!", Toast.LENGTH_LONG);
         toast.show();
         buttonLogin.setEnabled(true);
+        progressBar.setVisibility(View.GONE);
     }
 }

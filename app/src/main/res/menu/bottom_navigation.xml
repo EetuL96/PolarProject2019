@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottom_stats"
+        android:title="Stats"
+        android:icon="@drawable/ic_subject_white_24dp"/>
+    <item
+        android:id="@+id/botton_routes"
+        android:title="Routes"
+        android:icon="@drawable/ic_transform_white_24dp"
+        />
+</menu>

@@ -29,7 +29,7 @@
     <fragment
         android:id="@+id/startRunFragment"
         android:name="com.example.polarproject.StartRunFragment"
-        android:label="Start run"
+        android:label="Start Run"
         tools:layout="@layout/fragment_start_run">
     </fragment>
 
@@ -44,6 +44,10 @@
         tools:layout="@layout/fragment_profile"
         android:label="Profile">
     </fragment>
-
+    <fragment
+        android:id="@+id/followingFragment"
+        android:name="com.example.polarproject.FollowingFragment"
+        android:label="Following"
+        tools:layout="@layout/fragment_following" />
 
 </navigation>

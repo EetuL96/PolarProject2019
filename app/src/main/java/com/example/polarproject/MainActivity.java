@@ -1,32 +1,47 @@
 package com.example.polarproject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.polarproject.Adapters.RecyclerViewAdapter;
 import com.example.polarproject.Classes.HerokuDataBase;
+import com.example.polarproject.Classes.PictureInterface;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.internal.NavigationMenu;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener, RecyclerViewAdapter.ListenerInterface {
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+
+
+public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener, FollowingFragment.OnFragmentInteractionListener, RecyclerViewAdapter.ListenerInterface, NavController.OnDestinationChangedListener {
 
     private NavController navController;
     private DrawerLayout drawerLayout;
     AppBarConfiguration appBarConfiguration;
+    BottomNavigationView bottomNavigationView;
+    PictureInterface pictureInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +61,30 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         NavigationUI.setupWithNavController(navView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         navView.setNavigationItemSelectedListener(this);
-        navController.navigate(R.id.routesFragment);
-        //TEST GETTING ALL USERS
-        //HerokuDataBase herokuDataBase = new HerokuDataBase(this);
-        //herokuDataBase.getAllUsers();
+        bottomNavigationView = findViewById(R.id.bottom_nav);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+        bottomNavigationView.setVisibility(View.GONE);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId())
+                {
+                    case R.id.bottom_stats:
+                        Log.d("HSHSHS", "Bottom Navigation Stats Clicked!");
+                        break;
+                    case R.id.botton_routes:
+                        Log.d("HSHSHS", "Bottom Navigation Routes Clicked!");
+                        break;
+                }
+                return false;
+            }
+        });
+        navController.addOnDestinationChangedListener(this);
+    }
+
+    public void setPictureInterface(PictureInterface pictureInterface)
+    {
+        this.pictureInterface = pictureInterface;
     }
 
     @Override
@@ -99,6 +134,11 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             }
+            case R.id.drawer_following: {
+                navController.navigate(R.id.followingFragment);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                break;
+            }
             case R.id.drawer_search_users: {
                 navController.navigate(R.id.searchUsersFragment);
                 drawerLayout.closeDrawer(GravityCompat.START);
@@ -116,11 +156,50 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
     }
 
     @Override
-    public void itemClicked(String name) {
-        Log.d("WWWW", name + " Item Clicked!");
+    public void itemClicked(User user) {
         Bundle bundle = new Bundle();
-        bundle.putString("name", name);
+        bundle.putSerializable("name", user);
         navController.navigate(R.id.profileFragment, bundle);
+    }
+
+    @Override
+    public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+        Log.d("ASAS", "OnDestinationChanged");
+        Log.d("ASAS", destination.getNavigatorName());
+        if (destination == navController.getGraph().findNode(R.id.profileFragment))
+        {
+            Log.d("ASAS", "Profile Fragment!");
+            bottomNavigationView.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            bottomNavigationView.setVisibility(View.GONE);
+        }
+    }
+
+    //Used when user click profile pic on MyProfileFragment
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("HYHYHY", "onActivityResult");
+        if (resultCode == RESULT_OK)
+        {
+            try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                pictureInterface.getData(selectedImage);
+                Log.d("HYHYHY", "Fine");
+
+            }
+            catch (FileNotFoundException e)
+            {
+                e.printStackTrace();
+                Log.d("HYHYHY", e.getMessage());
+                Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT);
+            }
+
+        }
     }
 
 }

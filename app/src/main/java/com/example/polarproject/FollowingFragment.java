@@ -8,14 +8,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.polarproject.Adapters.RecyclerViewAdapter;
 import com.example.polarproject.Classes.HerokuDataBase;
@@ -23,34 +20,38 @@ import com.example.polarproject.Classes.HerokuDataBase;
 import java.util.ArrayList;
 
 
-
-public class SearchUsersFragment extends Fragment implements HerokuDataBase.DataBaseAllUsersListener, HerokuDataBase.DataBaseSearchUserListener, HerokuDataBase.DatabaseGetAllUserAndCheckIfFollowedListener, View.OnClickListener {
-
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link FollowingFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link FollowingFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class FollowingFragment extends Fragment implements HerokuDataBase.DatabaseGetFollowedUsersListener{
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
     private RecyclerView recyclerView;
     private RecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<User> dataset = new ArrayList<>();
-    private Button buttonSearch = null;
-    private EditText editTextSeacrh = null;
+    private View parent;
+    private HerokuDataBase herokuDataBase;
 
-    HerokuDataBase herokuDataBase;
-    View parent;
 
-    public SearchUsersFragment() {
-
+    public FollowingFragment() {
+        // Required empty public constructor
     }
 
-    public static SearchUsersFragment newInstance(String param1, String param2) {
-        SearchUsersFragment fragment = new SearchUsersFragment();
+    public static FollowingFragment newInstance(String param1, String param2) {
+        FollowingFragment fragment = new FollowingFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -65,17 +66,14 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-
         dataset.clear();
-        parent = inflater.inflate(R.layout.fragment_search_users, container, false);
+        parent = inflater.inflate(R.layout.fragment_following, container, false);
         recyclerView = parent.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
@@ -83,24 +81,16 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
         mAdapter = new RecyclerViewAdapter(getContext(), dataset);
         recyclerView.setAdapter(mAdapter);
 
-        editTextSeacrh = (EditText) parent.findViewById(R.id.editTextSearch);
-        editTextSeacrh.setText("");
-        buttonSearch = (Button) parent.findViewById(R.id.buttonSearch);
-        buttonSearch.setOnClickListener(this);
-
         User user = ((Application) getActivity().getApplication()).getUser();
-        Log.d("IIII", "OnCreateView(): ");
-        herokuDataBase = new HerokuDataBase(getActivity().getApplicationContext());
-        herokuDataBase.setDatabaseAllUsersListener(this);
-        herokuDataBase.setDatabaseSearchListener(this);
-        //herokuDataBase.getAllUsers();
-
-        herokuDataBase.setDatabaseGetAllUserAndCheckIfFollowedListener(this);
-        herokuDataBase.getAllUsersAndCheckIfFollowed(user.getID());
+        herokuDataBase = new HerokuDataBase(getContext());
+        herokuDataBase.setDatabaseGetFollowedListener(this);
+        herokuDataBase.getFollowedUsers(user.getID());
 
         return parent;
+
     }
 
+    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -118,68 +108,27 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
         }
     }
 
+
     @Override
     public void onDetach() {
         super.onDetach();
-
         mListener = null;
-        editTextSeacrh.setText("");
-        dataset.clear();
-        mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void userFound(User user) {
-        dataset.add(user);
-        mAdapter.notifyDataSetChanged();
     }
 
 
     @Override
-    public void allUsersError() {
-
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view == parent.findViewById(R.id.buttonSearch))
-        {
-            String email = editTextSeacrh.getText().toString();
-            if (!TextUtils.isEmpty(email))
-            {
-                herokuDataBase.searchUserByEmail(email);
-            }
-            else
-            {
-                dataset.clear();
-                mAdapter.notifyDataSetChanged();
-                herokuDataBase.getAllUsers();
-            }
-        }
-    }
-
-    @Override
-    public void userSearchFound(User user) {
-        dataset.clear();
+    public void userGetFollowed(User user) {
         dataset.add(user);
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void userSeacrhNotFound() {
-        dataset.clear();
-        mAdapter.notifyDataSetChanged();
-        Toast toast = Toast.makeText(getContext(), "User not found...", Toast.LENGTH_LONG);
-        toast.show();
-    }
+    public void userGetFollowError() {
 
-    @Override
-    public void getUserAndCheckIfFollowed(User user) {
-        dataset.add(user);
-        mAdapter.notifyDataSetChanged();
     }
 
     public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }
