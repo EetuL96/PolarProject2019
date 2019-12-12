@@ -133,9 +133,10 @@ public class StartRunFragment extends Fragment {
                 else{
                     running = false;
                     button.setText("Start");
-                    stopSensors();
+                    //stopSensors();
                     if(dataPointArrayList.size()!=0){
                         saveRoute(dataPointArrayList);
+                        dataPointArrayList = new ArrayList<>();
                     }
                 }
             }
@@ -278,7 +279,7 @@ public class StartRunFragment extends Fragment {
                 case "activity":
                     Log.d("logi", "onReceive: activity");
                     activity = intent.getDoubleExtra("activity", 0);
-                    textViewActivity.setText(Double.toString(activity));
+                    textViewActivity.setText(String.format("%.2f", activity));
                     break;
                 case "location":
                     Log.d("logi", "onReceive: location");
@@ -304,7 +305,6 @@ public class StartRunFragment extends Fragment {
                             Log.d("kimmo", "distance: " + distance);
                         }
                     }
-                    //intent.getFloatExtra("accuracy", 0);
                     break;
                 case "hr":
                     Log.d("logi", "onReceive: hr");
@@ -322,7 +322,7 @@ public class StartRunFragment extends Fragment {
                     }
                     if(IDSpinner.getSelectedItem()!=null){
                         if(IDSpinner.getSelectedItem().toString().equals(id)){
-                            textViewBPM.setText(Integer.toString(bpm));
+                            textViewBPM.setText(bpm + " bpm");
                             if(bpm>120){
                                 Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
                                 v.vibrate(500);
