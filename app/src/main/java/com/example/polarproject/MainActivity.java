@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
 
         appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.createMapFragment, R.id.searchUsersFragment, R.id.followingFragment)
+                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.searchUsersFragment)
                         .setDrawerLayout(drawerLayout)
                         .build();
 
@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         NavigationUI.setupWithNavController(navView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         navView.setNavigationItemSelectedListener(this);
-
         bottomNavigationView = findViewById(R.id.bottom_nav);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         bottomNavigationView.setVisibility(View.GONE);
@@ -106,6 +105,14 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
     }
 
+    @Override
+    public void openRoute(String routeId) {
+        Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+        intent.putExtra("routeId", routeId);
+        MainActivity.this.startActivity(intent);
+        MainActivity.this.finish();
+    }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -119,11 +126,6 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
             case R.id.drawer_new_run: {
                 navController.navigate(R.id.startRunFragment);
-                drawerLayout.closeDrawer(GravityCompat.START);
-                break;
-            }
-            case R.id.drawer_create_map: {
-                navController.navigate(R.id.createMapFragment);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             }

@@ -2,6 +2,7 @@ package com.example.polarproject;
 
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     //ArrayList markerPoints= new ArrayList();
     RequestQueue mQueue;
+    String routeId;
     ArrayList<RouteDataPoint> dataPoints = new ArrayList<>();
 
 
@@ -52,6 +54,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        Intent intent = getIntent();
+        routeId = intent.getStringExtra("routeId");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -114,8 +118,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void getRoute()
     {
-        String id = "5dee76af6d290c0017cb8e85";
-        String url = "https://polarapp-oamk.herokuapp.com/routes/" + id;
+        String url = "https://polarapp-oamk.herokuapp.com/routes/" + routeId;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
