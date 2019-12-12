@@ -23,22 +23,13 @@ import com.example.polarproject.Classes.HerokuDataBase;
 import java.util.ArrayList;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SearchUsersFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SearchUsersFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SearchUsersFragment extends Fragment implements HerokuDataBase.DataBaseAllUsersListener, HerokuDataBase.DataBaseSearchUserListener, View.OnClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class SearchUsersFragment extends Fragment implements HerokuDataBase.DataBaseAllUsersListener, HerokuDataBase.DataBaseSearchUserListener, HerokuDataBase.DatabaseGetAllUserAndCheckIfFollowedListener, View.OnClickListener {
+
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -55,18 +46,9 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
     View parent;
 
     public SearchUsersFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchUsersFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static SearchUsersFragment newInstance(String param1, String param2) {
         SearchUsersFragment fragment = new SearchUsersFragment();
         Bundle args = new Bundle();
@@ -106,16 +88,19 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
         buttonSearch = (Button) parent.findViewById(R.id.buttonSearch);
         buttonSearch.setOnClickListener(this);
 
+        User user = ((Application) getActivity().getApplication()).getUser();
         Log.d("IIII", "OnCreateView(): ");
         herokuDataBase = new HerokuDataBase(getActivity().getApplicationContext());
         herokuDataBase.setDatabaseAllUsersListener(this);
         herokuDataBase.setDatabaseSearchListener(this);
-        herokuDataBase.getAllUsers();
+        //herokuDataBase.getAllUsers();
+
+        herokuDataBase.setDatabaseGetAllUserAndCheckIfFollowedListener(this);
+        herokuDataBase.getAllUsersAndCheckIfFollowed(user.getID());
 
         return parent;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -159,7 +144,6 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
     public void onClick(View view) {
         if (view == parent.findViewById(R.id.buttonSearch))
         {
-            Log.d("RRRR", "Search button CLICKED!");
             String email = editTextSeacrh.getText().toString();
             if (!TextUtils.isEmpty(email))
             {
@@ -189,8 +173,13 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
         toast.show();
     }
 
+    @Override
+    public void getUserAndCheckIfFollowed(User user) {
+        dataset.add(user);
+        mAdapter.notifyDataSetChanged();
+    }
+
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

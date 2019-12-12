@@ -37,4 +37,17 @@ public class User implements Serializable {
     private String email;
     public void setEmail(String email) {this.email = email;}
     public String getEmail (){return this.email;}
+
+    private boolean isFollowed;
+    public void setIsFollowed(boolean isFollowed)
+    {
+        this.isFollowed = isFollowed;
+    }
+
+    public boolean getIsFollowed()
+    {
+        return this.isFollowed;
+    }
+
+
 }

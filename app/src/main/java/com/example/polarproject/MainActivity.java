@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 return false;
             }
         });
-
         navController.addOnDestinationChangedListener(this);
     }
 

@@ -35,10 +35,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     {
         public TextView textView;
         public RelativeLayout parentLayout;
+        public TextView textViewIsFollowed;
 
         public MyViewHolder(View itemView){
             super(itemView);
             textView = itemView.findViewById(R.id.textView2);
+            textViewIsFollowed = itemView.findViewById(R.id.textViewFollowed);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
     }
@@ -61,7 +63,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position)
     {
-        holder.textView.setText(userList.get(position).getEmail());
+        User user = userList.get(position);
+
+        try
+        {
+            if (user.getIsFollowed())
+            {
+                holder.textViewIsFollowed.setText("Followed");
+            }
+            else
+            {
+                holder.textViewIsFollowed.setText("");
+            }
+        }
+        catch (Exception e)
+        {
+            holder.textViewIsFollowed.setText("");
+        }
+
+        holder.textView.setText(user.getEmail());
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

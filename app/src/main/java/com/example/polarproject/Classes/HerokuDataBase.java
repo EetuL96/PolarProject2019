@@ -99,12 +99,22 @@ public class HerokuDataBase {
         void registerSuccess();
         void registerError();
     }
+
+    public void setDatabaseGetAllUserAndCheckIfFollowedListener(DatabaseGetAllUserAndCheckIfFollowedListener listener)
+    {
+        this.callbackInterface7 = listener;
+    }
+    public interface DatabaseGetAllUserAndCheckIfFollowedListener
+    {
+        void getUserAndCheckIfFollowed(User user);
+    }
     DataBaseLoginListener callbackInterface = null;
     DatabaseRegisterListener callbackInterface2 = null;
     DataBaseAllUsersListener callbackInterface3 = null;
     DataBaseSearchUserListener callbackInterface4 = null;
     DatabaseFollowUserListener callbackInterface5 = null;
     DatabaseGetFollowedUsersListener callbackInterface6 = null;
+    DatabaseGetAllUserAndCheckIfFollowedListener callbackInterface7 = null;
 
     public void getUserByEmail(String email, String token)
     {
@@ -405,6 +415,50 @@ public class HerokuDataBase {
         mQueue.add(jsonArrayRequest);
     }
 
+    public void getAllUsersAndCheckIfFollowed(String ownId)
+    {
+        String url = "https://polarapp-oamk.herokuapp.com/users/followCheck/" + ownId;
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try
+                        {
+                            int i = 0;
+                            while (i < response.length())
+                            {
+                                JSONObject jsonObject = response.getJSONObject(i);
+                                String id = jsonObject.getString("_id");
+                                String email = jsonObject.getString("email");
+                                boolean followed = jsonObject.getBoolean("followed");
+                                User user = new User();
+                                user.setID(id);
+                                user.setEmail(email);
+                                user.setIsFollowed(followed);
+                                if (followed)
+                                {
+                                    Log.d("VBVB", "Following: " + user.getEmail());
+                                }
+                                callbackInterface7.getUserAndCheckIfFollowed(user);
+                                i++;
+                            }
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                            Log.d("VBVB", e.toString());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("VBVB", error.toString());
+                    }
+                });
+        mQueue.add(jsonArrayRequest);
+    }
 
 
 }
