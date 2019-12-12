@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 return false;
             }
         });
+        navController.navigate(R.id.routesFragment);
         navController.addOnDestinationChangedListener(this);
     }
 
@@ -121,9 +122,13 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         MainActivity.this.startActivity(intent);
         MainActivity.this.finish();
     }
-
-
-
+  
+    @Override
+    public void newRoute() {
+        navController.navigate(R.id.startRunFragment);
+        drawerLayout.closeDrawer(GravityCompat.START);
+    }
+  
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
