@@ -199,7 +199,6 @@ public class HerokuDataBase {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //Log.d("LOL", error.getMessage().toString());
                         callbackInterface.loginError();
                     }
                 });
@@ -267,18 +266,6 @@ public class HerokuDataBase {
                                 callbackInterface3.userFound(user);
                                 i++;
                             }
-                            /*
-                            String id = jsonObject.getString("_id");
-                            String email = jsonObject.getString("email");
-                            String firstname = jsonObject.getString("firstname");
-                            String lastname = jsonObject.getString("lastname");
-
-                            User user = new User();
-                            user.setEmail(email);
-                            user.setID(id);
-                            user.setFirstName(firstname);
-                            user.setLastName(lastname);
-                            Log.d("GGGGG", firstname + lastname);*/
                         }
                         catch (JSONException e)
                         {
@@ -316,14 +303,6 @@ public class HerokuDataBase {
                             user.setEmail(email);
                             user.setID(id);
                             callbackInterface4.userSearchFound(user);
-                            //Log.d("RRRR", "User fond: " + email);
-
-                            //User user = new User();
-                            //user.setID(id);
-                            //user.setFirstName(firstname);
-                            //user.setLastName(lastname);
-
-                            //callbackInterface.userByEmailSuccess(user);
                         }
                         catch (JSONException e)
                         {
