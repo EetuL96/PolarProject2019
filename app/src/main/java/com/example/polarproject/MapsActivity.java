@@ -133,7 +133,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     //Log.d("ROUTETEST", jObject.toString()) ;
                                     //Log.d("ROUTETEST", Double.toString(jObject.getDouble("lat")));
                                     RouteDataPoint dataPoint = new RouteDataPoint();
-                                    dataPoint.setTime(jObject.getString("time"));
+                                    dataPoint.setTime(0);
                                     dataPoint.setLat(jObject.getDouble("lat"));
                                     dataPoint.setLng(jObject.getDouble("lng"));
                                     dataPoint.setActivity(jObject.getDouble("activity"));

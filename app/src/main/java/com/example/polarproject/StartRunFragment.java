@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -21,8 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -30,7 +29,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.polarproject.Classes.Route;
 import com.example.polarproject.Classes.RouteDataPoint;
 
 import org.json.JSONArray;
@@ -61,15 +59,23 @@ public class StartRunFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private Button button = null;
 
-    private SensorReceiver receiver = new SensorReceiver();
-    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private SensorReceiver receiver;
+    private Spinner IDSpinner = null;
+    private TextView textViewBPM = null;
+    private TextView textViewActivity = null;
+    private ArrayAdapter IDAdapter = null;
     private ArrayList<RouteDataPoint> dataPointArrayList = new ArrayList<>();
-    double lat;
-    double lng;
-    int bpm;
-    long starttime;
-    double activity;
+    private ArrayList<String> IDArrayList = new ArrayList<>();
+    private double lat;
+    private double lng;
+    private int bpm;
+    private long starttime;
+    private double activity;
+    private double distance;
+    private boolean running = false;
+    private boolean sensors = false;
     private RequestQueue queue;
 
     public StartRunFragment() {
@@ -108,15 +114,30 @@ public class StartRunFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_start_run, container, false);
-        Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
-        ArrayList<String> list= new ArrayList<String>();
-        list.add("Route 1");
-        list.add("Route 2");
-        list.add("Route 3");
-        list.add("Route 4");
-        ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        textViewBPM = view.findViewById(R.id.textViewBPM);
+        textViewActivity = view.findViewById(R.id.textViewActivity);
+        IDSpinner = view.findViewById(R.id.spinnerID);
+        IDAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, IDArrayList);
+        IDSpinner.setAdapter(IDAdapter);
+        startSensors();
+        button = view.findViewById(R.id.btnStart);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("kimmo", "onClick: ");
+                if(!running){
+                    button.setText("Stop");
+                    running = true;
+                    startSensors();
+                }
+                else{
+                    running = false;
+                    button.setText("Start");
+                    stopSensors();
+                    saveRoute(dataPointArrayList);
+                }
+            }
+        });
         return view;
     }
 
@@ -159,33 +180,24 @@ public class StartRunFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public boolean checkLocationPermission(){
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            return false;
-        }
-        else{
-            return true;
-        }
-    }
-
-    public boolean checkBTPermission(){
-        if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, 2);
-            return false;
-        }
-        else{
-            return true;
-        }
-    }
-
     public void startSensors(){
         Log.d("logi", "startSensors: ");
-        receiver = new SensorReceiver();
-        IntentFilter filter = new IntentFilter("sensor");
-        getContext().registerReceiver(receiver, filter);
-        getContext().startService(new Intent(getContext(), SensorListenerService.class));
+        if(!sensors){
+            receiver = new SensorReceiver();
+            IntentFilter filter = new IntentFilter("sensor");
+            getContext().registerReceiver(receiver, filter);
+            getContext().startService(new Intent(getContext(), SensorListenerService.class));
+            sensors = true;
+        }
+    }
+
+    public void stopSensors(){
+        if(sensors){
+            Log.d("logi", "stopSensors: ");
+            getContext().stopService(new Intent(getContext(), SensorListenerService.class));
+            getContext().unregisterReceiver(receiver);
+            sensors = false;
+        }
     }
 
     public void saveRoute(ArrayList<RouteDataPoint> arrayList){
@@ -204,6 +216,7 @@ public class StartRunFragment extends Fragment {
                 jsonArray.put(jsonObject);
             }
             js.put("datapoints", jsonArray);
+            js.put("distance", distance);
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -234,42 +247,85 @@ public class StartRunFragment extends Fragment {
         queue.add(jsonObjReq);
     }
 
-    public void stopSensors(){
-        Log.d("logi", "stopSensors: ");
-        getContext().stopService(new Intent(getContext(), SensorListenerService.class));
-        getContext().unregisterReceiver(receiver);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        Log.d("kimmo", "onDestroyView: StartRun");
+        stopSensors();
+    }
+
+    public double calcDistance(double lat1, double lat2, double lng1, double lng2){
+        if ((lat1 == lat2) && (lng1 == lng2)) {
+            return 0;
+        }
+        else {
+            double theta = lng1 - lng2;
+            double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
+            dist = Math.acos(dist);
+            dist = Math.toDegrees(dist);
+            dist = dist * 111.18958;
+            return (dist);
+        }
     }
 
     private class SensorReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("logi", "onReceive: ");
             switch (intent.getStringExtra("action")) {
                 case "activity":
+                    Log.d("logi", "onReceive: activity");
                     activity = intent.getDoubleExtra("activity", 0);
+                    textViewActivity.setText(Double.toString(activity));
                     break;
                 case "location":
-                    lat = intent.getDoubleExtra("lat", 0);
-                    lng = intent.getDoubleExtra("lng", 0);
-                    RouteDataPoint datapoint = new RouteDataPoint();
-                    datapoint.setActivity(activity);
-                    datapoint.setBpm(bpm);
-                    datapoint.setLat(lat);
-                    datapoint.setLng(lng);
-                    if(dataPointArrayList.size()==0){
-                        starttime = System.currentTimeMillis();
-                        datapoint.setTime(0);
-                    }
-                    else{
-                        datapoint.setTime(System.currentTimeMillis() - starttime);
+                    Log.d("logi", "onReceive: location");
+                    if(running){
+                        lat = intent.getDoubleExtra("lat", 0);
+                        lng = intent.getDoubleExtra("lng", 0);
+                        RouteDataPoint datapoint = new RouteDataPoint();
+                        datapoint.setActivity(activity);
+                        datapoint.setBpm(bpm);
+                        datapoint.setLat(lat);
+                        datapoint.setLng(lng);
+                        double oldLat = dataPointArrayList.get(dataPointArrayList.size()-1).getLat();
+                        double oldLng = dataPointArrayList.get(dataPointArrayList.size()-1).getLng();
+                        dataPointArrayList.add(datapoint);
+                        if(dataPointArrayList.size()==1){
+                            starttime = System.currentTimeMillis();
+                            datapoint.setTime(0);
+                            distance = 0;
+                        }
+                        else{
+                            datapoint.setTime(System.currentTimeMillis() - starttime);
+                            distance += calcDistance(oldLat, lat, oldLng, lng);
+                            Log.d("kimmo", "distance: " + distance);
+                        }
                     }
                     //intent.getFloatExtra("accuracy", 0);
                     break;
                 case "hr":
+                    Log.d("logi", "onReceive: hr");
                     bpm = intent.getIntExtra("hr", 0);
-                    if(bpm>120){
-                        Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                        v.vibrate(500);
+                    String id = intent.getStringExtra("id");
+                    boolean flag = false;
+                    for (String str:IDArrayList) {
+                        if(str.equals(id)){
+                            flag = true;
+                        }
+                    }
+                    if(!flag){
+                        IDArrayList.add(id);
+                        IDAdapter.notifyDataSetChanged();
+                    }
+                    if(IDSpinner.getSelectedItem()!=null){
+                        if(IDSpinner.getSelectedItem().toString().equals(id)){
+                            textViewBPM.setText(Integer.toString(bpm));
+                            if(bpm>120){
+                                Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                                v.vibrate(500);
+                            }
+                        }
                     }
                     break;
             }
