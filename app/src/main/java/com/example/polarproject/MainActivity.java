@@ -108,6 +108,15 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
     }
 
+    @Override
+    public void openRoute(String routeId) {
+        Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+        intent.putExtra("routeId", routeId);
+        MainActivity.this.startActivity(intent);
+        MainActivity.this.finish();
+    }
+
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -124,11 +133,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             }
-            case R.id.drawer_create_map: {
-                navController.navigate(R.id.createMapFragment);
-                drawerLayout.closeDrawer(GravityCompat.START);
-                break;
-            }
+
             case R.id.drawer_routes: {
                 navController.navigate(R.id.routesFragment);
                 drawerLayout.closeDrawer(GravityCompat.START);
