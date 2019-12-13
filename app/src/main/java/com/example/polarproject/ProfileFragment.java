@@ -174,7 +174,14 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
 
     @Override
     public void userFollowed() {
-        Toast.makeText(getContext(), "Followed " + profileUser.getEmail(), Toast.LENGTH_LONG).show();
+        try {
+            Toast.makeText(getContext(), "Followed " + profileUser.getEmail(), Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e)
+        {
+
+        }
+
     }
 
     @Override

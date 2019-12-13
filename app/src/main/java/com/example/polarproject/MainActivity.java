@@ -219,6 +219,8 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         return true;
     }
 
+
+    //Called when user clicks recycleview item
     @Override
     public void itemClicked(User user) {
         Bundle bundle = new Bundle();
@@ -236,7 +238,9 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         if (drawerIsOpen)
         {
             closeDrawer();
+            Log.d("VRVRVR", item.toString());
             return true;
+
         }
         else
         {

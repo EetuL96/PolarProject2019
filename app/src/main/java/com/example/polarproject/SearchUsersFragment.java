@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 
 
-public class SearchUsersFragment extends Fragment implements HerokuDataBase.DataBaseAllUsersListener, HerokuDataBase.DataBaseSearchUserListener, HerokuDataBase.DatabaseGetAllUserAndCheckIfFollowedListener, View.OnClickListener {
+public class SearchUsersFragment extends Fragment implements HerokuDataBase.DataBaseAllUsersListener, HerokuDataBase.DataBaseSearchUserListener, HerokuDataBase.DatabaseGetAllUserAndCheckIfFollowedListener, View.OnClickListener, HerokuDataBase.DatabaseSearchUserByEmailAndGetFollowedLister {
 
 
     private static final String ARG_PARAM1 = "param1";
@@ -41,6 +41,7 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
     private ArrayList<User> dataset = new ArrayList<>();
     private Button buttonSearch = null;
     private EditText editTextSeacrh = null;
+    User user = null;
 
     HerokuDataBase herokuDataBase;
     View parent;
@@ -88,7 +89,7 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
         buttonSearch = (Button) parent.findViewById(R.id.buttonSearch);
         buttonSearch.setOnClickListener(this);
 
-        User user = ((Application) getActivity().getApplication()).getUser();
+        user = ((Application) getActivity().getApplication()).getUser();
         Log.d("IIII", "OnCreateView(): ");
         herokuDataBase = new HerokuDataBase(getActivity().getApplicationContext());
         herokuDataBase.setDatabaseAllUsersListener(this);
@@ -97,6 +98,9 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
 
         herokuDataBase.setDatabaseGetAllUserAndCheckIfFollowedListener(this);
         herokuDataBase.getAllUsersAndCheckIfFollowed(user.getID());
+
+        herokuDataBase.setDatabaseSearchUserByEmailAndGetFollowedLister(this);
+        //herokuDataBase.searchUserByEmailAndGetFollowed("eetu@mail.com", user.getID());
 
         return parent;
     }
@@ -147,13 +151,14 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
             String email = editTextSeacrh.getText().toString();
             if (!TextUtils.isEmpty(email))
             {
-                herokuDataBase.searchUserByEmail(email);
+                //herokuDataBase.searchUserByEmail(email);
+                herokuDataBase.searchUserByEmailAndGetFollowed(email, user.getID());
             }
             else
             {
                 dataset.clear();
                 mAdapter.notifyDataSetChanged();
-                herokuDataBase.getAllUsers();
+                herokuDataBase.getAllUsersAndCheckIfFollowed(user.getID());
             }
         }
     }
@@ -177,6 +182,23 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
     public void getUserAndCheckIfFollowed(User user) {
         dataset.add(user);
         mAdapter.notifyDataSetChanged();
+    }
+
+    //SearchUserByEmailAndGetFollowed
+    @Override
+    public void searchSuccess(User user) {
+        dataset.clear();
+        dataset.add(user);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    //SearchUserByEmailAndGetFollowed
+    @Override
+    public void searchFailed() {
+        dataset.clear();
+        mAdapter.notifyDataSetChanged();
+        Toast toast = Toast.makeText(getContext(), "User not found...", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     public interface OnFragmentInteractionListener {

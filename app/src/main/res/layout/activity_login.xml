@@ -44,7 +44,7 @@
             android:inputType="textEmailAddress"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
-            android:fontFamily="@font/doppio_one"/>
+            android:fontFamily="@font/doppio_one" />
 
         <TextView
             android:id="@+id/textViewPasswordHint"

@@ -64,6 +64,17 @@ public class HerokuDataBase {
         callbackInterface6 = listener;
     }
 
+    public void setDatabaseSearchUserByEmailAndGetFollowedLister(DatabaseSearchUserByEmailAndGetFollowedLister lister)
+    {
+        this.callbackInterface8 = lister;
+    }
+
+    public interface DatabaseSearchUserByEmailAndGetFollowedLister
+    {
+        void searchSuccess(User user);
+        void searchFailed();
+    }
+
     public interface DatabaseGetFollowedUsersListener
     {
         void userGetFollowed(User user);
@@ -115,6 +126,7 @@ public class HerokuDataBase {
     DatabaseFollowUserListener callbackInterface5 = null;
     DatabaseGetFollowedUsersListener callbackInterface6 = null;
     DatabaseGetAllUserAndCheckIfFollowedListener callbackInterface7 = null;
+    DatabaseSearchUserByEmailAndGetFollowedLister callbackInterface8 = null;
 
     public void getUserByEmail(String email, String token)
     {
@@ -458,6 +470,50 @@ public class HerokuDataBase {
                     }
                 });
         mQueue.add(jsonArrayRequest);
+    }
+
+    //TODO create interface
+    public void searchUserByEmailAndGetFollowed(String email, String ownId)
+    {
+        String url = "https://polarapp-oamk.herokuapp.com/users/email/followCheck";
+        JSONObject js = new JSONObject();
+        try {
+            js.put("email", email);
+            js.put("myId", ownId);
+        }catch (JSONException e) {
+            e.printStackTrace();
+            callbackInterface8.searchFailed();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, url, js, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        try
+                        {
+                            User user = new User();
+                            user.setIsFollowed(jsonObject.getBoolean("followed"));
+                            user.setEmail(jsonObject.getString("email"));
+                            callbackInterface8.searchSuccess(user);
+                            Log.d("MNMNMN", "User: " + user.getEmail() + " " + user.getIsFollowed());
+
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                            Log.d("LOL", e.toString());
+                            callbackInterface8.searchFailed();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callbackInterface8.searchFailed();
+                    }
+                });
+        mQueue.add(jsonObjectRequest);
+        Log.d("LOL", "FINISH");
     }
 
 
