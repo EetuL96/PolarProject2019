@@ -6,6 +6,16 @@ public class Route {
     private double distance;
     private String id;
 
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    private long time;
+
     public String getDate() {
         return date;
     }

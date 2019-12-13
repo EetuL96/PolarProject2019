@@ -60,7 +60,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mQueue = Volley.newRequestQueue(this);
-
     }
 
     @Override
@@ -140,7 +139,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 for (int i = 1; i < dataPoints.size() ; i++) {
                                     int gValue = 255;
                                     int rValue = 255;
-                                    double highBpm = 120;
+                                    double highBpm = 160;
                                     double lowBpm = 60;
                                     double bpm = dataPoints.get(i).getBpm();
                                     Double scaleValue = (bpm - lowBpm) / (highBpm - lowBpm);
@@ -160,7 +159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 double avgLat = (dataPoints.get(0).getLat() + dataPoints.get(dataPoints.size() - 1).getLat()) / 2;
                                 double avgLng = (dataPoints.get(0).getLng() + dataPoints.get(dataPoints.size() - 1).getLng()) / 2;
                                 LatLng startLocation = new LatLng(avgLat, avgLng);
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLocation, 5));
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLocation, 14));
                             }catch (Exception e){
                             }
                         }

@@ -141,6 +141,7 @@ public class RoutesFragment extends Fragment {
                                 route.setId(jsObject.getString("_id"));
                                 route.setDate(jsObject.getString("date"));
                                 route.setDistance(jsObject.getDouble("distance"));
+                                route.setTime(jsObject.getLong("time"));
                                 routes.add(route);
                             }
                             routeListAdapter = new RouteListAdapter(getContext(), routes);
