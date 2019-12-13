@@ -61,7 +61,7 @@ public class StartRunFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private Button button = null;
 
-    private SensorReceiver receiver;
+    private SensorReceiver receiver = new SensorReceiver();
     private Spinner IDSpinner = null;
     private TextView textViewBPM = null;
     private TextView textViewActivity = null;
@@ -190,7 +190,7 @@ public class StartRunFragment extends Fragment {
     public void startSensors(){
         Log.d("logi", "startSensors: ");
         if(!sensors){
-            receiver = new SensorReceiver();
+            //receiver = new SensorReceiver();
             IntentFilter filter = new IntentFilter("sensor");
             getContext().registerReceiver(receiver, filter);
             getContext().startService(new Intent(getContext(), SensorListenerService.class));
@@ -211,6 +211,8 @@ public class StartRunFragment extends Fragment {
         JSONObject js = new JSONObject();
         try {
             JSONArray jsonArray = new JSONArray();
+            double aBpm = 0;
+            double maksBpm = 0;
             for (RouteDataPoint datapoint:arrayList) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("lat", datapoint.getLat());
@@ -219,10 +221,19 @@ public class StartRunFragment extends Fragment {
                 jsonObject.put("bpm", datapoint.getBpm());
                 jsonObject.put("time", datapoint.getTime());
                 jsonArray.put(jsonObject);
+                aBpm += datapoint.getBpm();
+                if(datapoint.getBpm()>maksBpm){
+                    maksBpm = datapoint.getBpm();
+                }
             }
+            aBpm = aBpm/dataPointArrayList.size();
             js.put("datapoints", jsonArray);
             js.put("distance", distance);
             js.put("owner", ((Application) getActivity().getApplication()).getUser().getID());
+            js.put("time", dataPointArrayList.get(dataPointArrayList.size()-1).getTime());
+            js.put("bpm_average", aBpm);
+            js.put("bpm_maks", maksBpm);
+            js.put("speed_average_kmh", distance/((dataPointArrayList.get(dataPointArrayList.size()-1).getTime())/1000/3600));
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -294,8 +305,6 @@ public class StartRunFragment extends Fragment {
                         datapoint.setBpm(bpm);
                         datapoint.setLat(lat);
                         datapoint.setLng(lng);
-                        double oldLat = dataPointArrayList.get(dataPointArrayList.size()-1).getLat();
-                        double oldLng = dataPointArrayList.get(dataPointArrayList.size()-1).getLng();
                         dataPointArrayList.add(datapoint);
                         if(dataPointArrayList.size()==1){
                             starttime = System.currentTimeMillis();
@@ -303,13 +312,19 @@ public class StartRunFragment extends Fragment {
                             distance = 0;
                         }
                         else{
+                            double oldLat = dataPointArrayList.get(dataPointArrayList.size()-2).getLat();
+                            double oldLng = dataPointArrayList.get(dataPointArrayList.size()-2).getLng();
                             datapoint.setTime(System.currentTimeMillis() - starttime);
                             distance += calcDistance(oldLat, lat, oldLng, lng);
+
+                            textViewDistance.setText(distance + " km");
+                            double time = dataPointArrayList.get(dataPointArrayList.size()-1).getTime();
+                            double speed = distance/(time/1000/3600);
+                            textViewASpeed.setText(String.format("%.2f", speed) + " km/h");
                             Log.d("kimmo", "distance: " + distance);
+                            Log.d("kimmo", "time: " + time);
+                            Log.d("kimmo", "speed: " + speed);
                         }
-                        textViewDistance.setText(String.format("%.2f", distance) + " km");
-                        double speed = distance/dataPointArrayList.get(dataPointArrayList.size()-1).getTime()*1000;
-                        textViewASpeed.setText(String.format("%.2f", speed) + " km/h");
                     }
                     break;
                 case "hr":
@@ -340,6 +355,14 @@ public class StartRunFragment extends Fragment {
                             }
                         }
                     }
+                    break;
+                case "destroyed":
+                    Log.d("kimmo", "onReceive: destroyed");
+                    sensors = false;
+                    /*if(running){
+                        stopSensors();
+                        startSensors();
+                    }*/
                     break;
             }
         }
