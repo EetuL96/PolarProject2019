@@ -18,6 +18,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
             @Override
             public void onDrawerOpened(@NonNull View drawerView) {
+
 
                 Log.d("GTGTGT", "Drawer opened");
                 ActionBar actionBar = getSupportActionBar();
@@ -223,9 +226,28 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
     //Called when user clicks recycleview item
     @Override
     public void itemClicked(User user) {
+        closeKeyboard();
         Bundle bundle = new Bundle();
         bundle.putSerializable("name", user);
         navController.navigate(R.id.profileFragment, bundle);
+    }
+
+    private void closeKeyboard()
+    {
+        try
+        {
+            View view = getCurrentFocus();
+            if (view != null)
+            {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+
     }
 
     public void closeDrawer()
@@ -235,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        closeKeyboard();
         if (drawerIsOpen)
         {
             closeDrawer();
