@@ -210,8 +210,6 @@ public class StartRunFragment extends Fragment {
     public void saveRoute(ArrayList<RouteDataPoint> arrayList){
         JSONObject js = new JSONObject();
         try {
-            js.put("owner", "random");
-            js.put("datetime", "datetime");
             JSONArray jsonArray = new JSONArray();
             for (RouteDataPoint datapoint:arrayList) {
                 JSONObject jsonObject = new JSONObject();
