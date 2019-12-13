@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -152,6 +153,7 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
             if (!TextUtils.isEmpty(email))
             {
                 //herokuDataBase.searchUserByEmail(email);
+
                 herokuDataBase.searchUserByEmailAndGetFollowed(email, user.getID());
             }
             else
@@ -160,6 +162,7 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
                 mAdapter.notifyDataSetChanged();
                 herokuDataBase.getAllUsersAndCheckIfFollowed(user.getID());
             }
+            closeKeyboard();
         }
     }
 
@@ -197,8 +200,25 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
     public void searchFailed() {
         dataset.clear();
         mAdapter.notifyDataSetChanged();
-        Toast toast = Toast.makeText(getContext(), "User not found...", Toast.LENGTH_SHORT);
-        toast.show();
+        try
+        {
+            Toast toast = Toast.makeText(getContext(), "User not found...", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        catch (Exception e)
+        {
+
+        }
+    }
+
+    private void closeKeyboard()
+    {
+        View view = getActivity().getCurrentFocus();
+        if (view != null)
+        {
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     public interface OnFragmentInteractionListener {

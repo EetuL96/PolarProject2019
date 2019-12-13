@@ -404,6 +404,7 @@ public class HerokuDataBase {
                                 User user = new User();
                                 user.setID(id);
                                 user.setEmail(email);
+                                user.setIsFollowed(true);
                                 callbackInterface6.userGetFollowed(user);
                                 Log.d("11111", user.getEmail());
                                 i++;
@@ -472,7 +473,6 @@ public class HerokuDataBase {
         mQueue.add(jsonArrayRequest);
     }
 
-    //TODO create interface
     public void searchUserByEmailAndGetFollowed(String email, String ownId)
     {
         String url = "https://polarapp-oamk.herokuapp.com/users/email/followCheck";

@@ -32,12 +32,10 @@ import com.google.android.material.tabs.TabLayoutMediator;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment implements TabLayoutMediator.TabConfigurationStrategy, View.OnClickListener, HerokuDataBase.DatabaseFollowUserListener{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -99,6 +97,11 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
 
         herokuDataBase = new HerokuDataBase(getContext());
         herokuDataBase.setDatabaseFollowListener(this);
+
+        if (profileUser.getIsFollowed())
+        {
+            buttonFollow.setText("Unfollow");
+        }
 
         return rootView;
     }
