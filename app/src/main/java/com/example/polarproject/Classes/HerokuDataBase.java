@@ -378,7 +378,6 @@ public class HerokuDataBase {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        //callbackInterface2.registerSuccess();
                         Log.d("BBBB", "New Follow Created!");
                         callbackInterface5.userFollowed();
                     }
@@ -512,6 +511,7 @@ public class HerokuDataBase {
                             User user = new User();
                             user.setIsFollowed(jsonObject.getBoolean("followed"));
                             user.setEmail(jsonObject.getString("email"));
+                            user.setID(jsonObject.getString("_id"));
                             callbackInterface8.searchSuccess(user);
                             Log.d("MNMNMN", "User: " + user.getEmail() + " " + user.getIsFollowed());
 

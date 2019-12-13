@@ -95,13 +95,11 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
         herokuDataBase = new HerokuDataBase(getActivity().getApplicationContext());
         herokuDataBase.setDatabaseAllUsersListener(this);
         herokuDataBase.setDatabaseSearchListener(this);
-        //herokuDataBase.getAllUsers();
 
         herokuDataBase.setDatabaseGetAllUserAndCheckIfFollowedListener(this);
         herokuDataBase.getAllUsersAndCheckIfFollowed(user.getID());
 
         herokuDataBase.setDatabaseSearchUserByEmailAndGetFollowedLister(this);
-        //herokuDataBase.searchUserByEmailAndGetFollowed("eetu@mail.com", user.getID());
 
         return parent;
     }
@@ -152,8 +150,6 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
             String email = editTextSeacrh.getText().toString();
             if (!TextUtils.isEmpty(email))
             {
-                //herokuDataBase.searchUserByEmail(email);
-
                 herokuDataBase.searchUserByEmailAndGetFollowed(email, user.getID());
             }
             else
@@ -170,7 +166,7 @@ public class SearchUsersFragment extends Fragment implements HerokuDataBase.Data
     public void userSearchFound(User user) {
         dataset.clear();
         dataset.add(user);
-        mAdapter.notifyDataSetChanged();
+        //mAdapter.notifyDataSetChanged();
     }
 
     @Override

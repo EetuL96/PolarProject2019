@@ -85,7 +85,10 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
 
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         TextView tv = rootView.findViewById(R.id.textViewName);
+
         profileUser = (User) getArguments().getSerializable("name");
+        Log.d("BBBB", profileUser.getID());
+
         tv.setText(profileUser.getEmail());
 
 
