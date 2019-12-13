@@ -2,6 +2,8 @@ package com.example.polarproject.Classes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -9,6 +11,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -22,6 +25,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -127,6 +133,18 @@ public class HerokuDataBase {
     DatabaseGetFollowedUsersListener callbackInterface6 = null;
     DatabaseGetAllUserAndCheckIfFollowedListener callbackInterface7 = null;
     DatabaseSearchUserByEmailAndGetFollowedLister callbackInterface8 = null;
+    DatabaseUnfollowListener callbackInterface9 = null;
+
+    public interface DatabaseUnfollowListener
+    {
+        void userUnfollowed();
+        void userUnfollowedError();
+    }
+
+    public void setDatabaseUnfollowListener(DatabaseUnfollowListener listener)
+    {
+        this.callbackInterface9 = listener;
+    }
 
     public void getUserByEmail(String email, String token)
     {
@@ -516,5 +534,115 @@ public class HerokuDataBase {
         Log.d("LOL", "FINISH");
     }
 
+    //TODO Create method that stores image to database
+    public void sendPicture(Bitmap bitmap, Context context)
+    {
+
+        String url = "https://polarapp-oamk.herokuapp.com/image-upload";
+        JSONObject js = new JSONObject();
+        try
+        {
+            File f = new File(context.getCacheDir(), "filetest");
+            try
+            {
+                f.createNewFile();
+
+                //Convert bitmap to byte array
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                byte[] bitmapdata = bos.toByteArray();
+
+                //write the bytes in file
+                FileOutputStream fos = new FileOutputStream(f);
+                fos.write(bitmapdata);
+                fos.flush();
+                fos.close();
+                Log.d("NHNHNH", "File created");
+            }
+            catch (Exception e)
+            {
+                Log.d("NHNHNH", "Error while creating file");
+            }
+            js.put("image", f);
+
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            Log.d("MPMPMP", e.getMessage());
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, url, js, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        try
+                        {
+                            String imageUrl = jsonObject.getString("imageUrl");
+                            Log.d("MPMPMP", imageUrl);
+                        }
+                        catch (JSONException e)
+                        {
+                            Log.d("MPMPMP", e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError e) {
+                        e.printStackTrace();
+                    }
+                });
+        mQueue.add(jsonObjectRequest);
+    }
+
+    //TODO create method that unfollows
+    public void unFollow(String myId, String targetId)
+    {
+        Log.d("BBBB", "myId: " + myId + " targetId: " + targetId);
+        /*JSONObject js = new JSONObject();
+        try {
+            js.put("myId", myId);
+            js.put("targetId", targetId);
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }*/
+        String url = "https://polarapp-oamk.herokuapp.com/follows/myId/"+myId+ "/targetId/" + targetId;
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.DELETE,url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            String msg = response.getString("msg");
+                            Log.d("BBBB", "UnFollowed! " + msg);
+                            callbackInterface9.userUnfollowed();
+                        }
+                        catch (Exception e){
+
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("BBBB", error.getMessage());
+                callbackInterface9.userUnfollowedError();
+            }
+        })
+        {
+            /*@Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("X-HTTP-Method-Override", "DELETE");
+                return headers;
+            }*/
+        };
+        mQueue.add(jsonObjReq);
+    }
 
 }
+
+

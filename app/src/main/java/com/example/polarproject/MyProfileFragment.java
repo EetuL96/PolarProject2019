@@ -3,6 +3,7 @@ package com.example.polarproject;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.polarproject.Adapters.MyProfileFragmentStateAdapter;
+import com.example.polarproject.Classes.HerokuDataBase;
 import com.example.polarproject.Classes.PictureInterface;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -37,6 +39,7 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
     MyProfileFragmentStateAdapter fragmentStateAdapter;
     ViewPager2 viewPager;
     CircleImageView imageProfile;
+    HerokuDataBase herokuDataBase;
 
 
     public MyProfileFragment() {
@@ -74,6 +77,7 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
         MainActivity activity = (MainActivity) getActivity();
         activity.setPictureInterface(this);
 
+        herokuDataBase = new HerokuDataBase(getActivity().getApplicationContext());
 
         imageProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,12 +85,23 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
                 Log.d("HOHOHO", "My Profile Image Clicked");
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
-                //startActivityForResult(Intent.createChooser(intent, "Pick Profile Picture"), 5);
                 getActivity().startActivityForResult(intent, 3);
             }
         });
-        return rootView;
 
+        //TODO send picture to database
+        /*try
+        {
+            Bitmap pic = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.bigchungus);
+            herokuDataBase.sendPicture(pic, getActivity().getApplicationContext());
+
+        }
+        catch (Exception e)
+        {
+            Log.d("OLOLOL", e.getMessage());
+        }*/
+
+        return rootView;
     }
 
     @Override

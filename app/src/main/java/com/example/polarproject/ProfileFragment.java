@@ -31,7 +31,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements TabLayoutMediator.TabConfigurationStrategy, View.OnClickListener, HerokuDataBase.DatabaseFollowUserListener{
+public class ProfileFragment extends Fragment implements TabLayoutMediator.TabConfigurationStrategy, View.OnClickListener, HerokuDataBase.DatabaseFollowUserListener, HerokuDataBase.DatabaseUnfollowListener{
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -48,21 +48,15 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
     View rootView;
 
     User profileUser = new User();
+    User user = new User();
 
     HerokuDataBase herokuDataBase;
 
+    boolean followOrUnfollow;
+
     public ProfileFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static ProfileFragment newInstance(String param1, String param2) {
         ProfileFragment fragment = new ProfileFragment();
@@ -87,22 +81,29 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
+
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         TextView tv = rootView.findViewById(R.id.textViewName);
         profileUser = (User) getArguments().getSerializable("name");
         tv.setText(profileUser.getEmail());
+
+
         buttonFollow = rootView.findViewById(R.id.buttonFollow);
         buttonFollow.setOnClickListener(this);
 
         herokuDataBase = new HerokuDataBase(getContext());
         herokuDataBase.setDatabaseFollowListener(this);
+        herokuDataBase.setDatabaseUnfollowListener(this);
 
         if (profileUser.getIsFollowed())
         {
             buttonFollow.setText("Unfollow");
         }
-
+        else
+        {
+            buttonFollow.setText("Follow");
+        }
         return rootView;
     }
 
@@ -162,23 +163,34 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
 
     }
 
+    //TODO
     @Override
     public void onClick(View view) {
         if (view == rootView.findViewById(R.id.buttonFollow))
         {
-            Log.d("DDDD", "Button Follow Clicked!");
-            Application application = (Application) getContext().getApplicationContext();
-            User user = application.getUser();
-            String userId = user.getID();
-            Log.d("DDDD", userId);
-            herokuDataBase.createNewFollow(user.getID(), profileUser.getID());
+            if(!profileUser.getIsFollowed())
+            {
+                Application application = (Application) getContext().getApplicationContext();
+                User user = application.getUser();
+                herokuDataBase.createNewFollow(user.getID(), profileUser.getID());
+            }
+            else
+            {
+                Application application = (Application) getContext().getApplicationContext();
+                User user = application.getUser();
+                herokuDataBase.unFollow(user.getID(), profileUser.getID());
+            }
+
         }
     }
 
     @Override
     public void userFollowed() {
-        try {
-            Toast.makeText(getContext(), "Followed " + profileUser.getEmail(), Toast.LENGTH_SHORT).show();
+        try
+        {
+            Toast.makeText(getContext(), "Followed: " + profileUser.getEmail(), Toast.LENGTH_SHORT).show();
+            profileUser.setIsFollowed(true);
+            buttonFollow.setText("Unfollow");
         }
         catch (Exception e)
         {
@@ -192,19 +204,27 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
 
     }
 
+    @Override
+    public void userUnfollowed() {
+        try
+        {
+            Toast.makeText(getContext(), "UnFollowed: " + profileUser.getEmail(), Toast.LENGTH_SHORT).show();
+            profileUser.setIsFollowed(false);
+            buttonFollow.setText("Follow");
+        }
+        catch (Exception e)
+        {
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+        }
+    }
+
+    @Override
+    public void userUnfollowedError() {
+
+    }
+
+
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }
