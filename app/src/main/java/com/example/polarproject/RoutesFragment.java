@@ -141,6 +141,7 @@ public class RoutesFragment extends Fragment {
                                 route.setId(jsObject.getString("_id"));
                                 route.setDate(jsObject.getString("date"));
                                 route.setDistance(jsObject.getDouble("distance"));
+                                route.setTime(jsObject.getLong("time"));
                                 routes.add(route);
                             }
                             routeListAdapter = new RouteListAdapter(getContext(), routes);
@@ -202,9 +203,11 @@ public class RoutesFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return false;
         }
-        else{
-            return true;
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            return false;
         }
+        return true;
     }
 
     public boolean checkBTPermission(){

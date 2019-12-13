@@ -42,6 +42,12 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         }
         TextView textViewDate = convertView.findViewById(R.id.textViewRouteDate);
         textViewDate.setText(route.getDate());
+        TextView textViewTime = convertView.findViewById(R.id.textViewRouteTime);
+        long ms = route.getTime();
+        int s = (int) ms / 1000;
+        int m = s / 60;
+        s -= m * 60;
+        textViewTime.setText(m +" min , " + s + " s");
         TextView textViewDistance = convertView.findViewById(R.id.textViewRouteDistance);
         textViewDistance.setText(route.getDistance()+" km");
         return convertView;

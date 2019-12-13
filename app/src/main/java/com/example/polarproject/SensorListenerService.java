@@ -11,7 +11,14 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -41,6 +48,8 @@ public class SensorListenerService extends Service implements SensorEventListene
     private SensorManager sensorManager;
     private android.hardware.Sensor sensor;
 
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationCallback locationCallback;
     private LocationManager locationManager;
     private LocationListener locationListener;
 
@@ -65,13 +74,13 @@ public class SensorListenerService extends Service implements SensorEventListene
         setupSensors();
         monitorHR();
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-        try{
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 1, locationListener);
+        /*try{
+            //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, locationListener);
             Log.d("kimmo", "SensorListenerService: Locationupdates requested");
         }
         catch (SecurityException e){
             Log.d("kimmo", "SensorListenerService: SecurityExcception");
-        }
+        }*/
         return START_NOT_STICKY;
     }
 
@@ -81,9 +90,12 @@ public class SensorListenerService extends Service implements SensorEventListene
 
         Log.d("kimmo", "onDestroy: ");
         sensorManager.unregisterListener(this, sensor);
-        locationManager.removeUpdates(locationListener);
+        fusedLocationClient.removeLocationUpdates(locationCallback);
         api.shutDown();
         api = null;
+        Intent intent = new Intent("sensor");
+        intent.putExtra("action", "destroyed");
+        sendBroadcast(intent);
     }
 
     public void setupSensors(){
@@ -94,28 +106,28 @@ public class SensorListenerService extends Service implements SensorEventListene
         sensor = sensorManager.getDefaultSensor(android.hardware.Sensor.TYPE_ACCELEROMETER);
 
         //Location
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        LocationRequest locationRequest = new LocationRequest()
+                .setInterval(5000)
+                .setFastestInterval(1000)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationCallback = new LocationCallback(){
             @Override
-            public void onLocationChanged(Location location) {
-                Log.d("kimmo", "onLocationChanged: " + location.getAccuracy());
-                Intent intent = new Intent("sensor");
-                intent.putExtra("action", "location");
-                intent.putExtra("lng", location.getLongitude());
-                intent.putExtra("lat", location.getLatitude());
-                intent.putExtra("accuracy", location.getAccuracy());
-                sendBroadcast(intent);
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                Location location = locationResult.getLastLocation();
+                if (location != null) {
+                    Log.d("kimmo", "onLocationChanged: " + location.getAccuracy());
+                    Intent intent = new Intent("sensor");
+                    intent.putExtra("action", "location");
+                    intent.putExtra("lng", location.getLongitude());
+                    intent.putExtra("lat", location.getLatitude());
+                    intent.putExtra("accuracy", location.getAccuracy());
+                    sendBroadcast(intent);
+                }
             }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {}
-
-            @Override
-            public void onProviderEnabled(String s) {}
-
-            @Override
-            public void onProviderDisabled(String s) {}
         };
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 
         //Heartbeat
         broadcastData = new LinkedHashMap<>();

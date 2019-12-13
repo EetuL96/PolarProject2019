@@ -277,9 +277,11 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return false;
         }
-        else{
-            return true;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            return false;
         }
+        return true;
     }
 
     public boolean checkBTPermission(){
