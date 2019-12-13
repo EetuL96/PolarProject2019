@@ -29,6 +29,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.polarproject.Classes.RouteDataPoint;
 
 import org.json.JSONArray;
@@ -115,6 +116,7 @@ public class StartRunFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        queue = Volley.newRequestQueue(getContext());
         View view = inflater.inflate(R.layout.fragment_start_run, container, false);
         textViewBPM = view.findViewById(R.id.textViewBPM);
         textViewActivity = view.findViewById(R.id.textViewActivity);
