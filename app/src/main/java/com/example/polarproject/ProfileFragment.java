@@ -14,9 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.polarproject.Adapters.MyProfileFragmentStateAdapter;
 import com.example.polarproject.Classes.HerokuDataBase;
 import com.google.android.material.tabs.TabLayout;
@@ -107,6 +110,9 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
         {
             buttonFollow.setText("Follow");
         }
+
+        ImageView imageProfile = rootView.findViewById(R.id.imageProfile);
+        Glide.with(this).load("https://polarapp-pictures.s3.eu-north-1.amazonaws.com/" + profileUser.getID()).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).placeholder(R.drawable.userdefaultimagecropped).into(imageProfile);
         return rootView;
     }
 

@@ -22,14 +22,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="40dp"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageProfile"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_marginTop="16dp"
                 android:src="@drawable/userdefaultimagecropped"
-                android:background="@drawable/my_profile_circle_shape"
+                app:civ_border_color="#FF000000"
+                app:civ_border_width="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,7 +46,7 @@
                 android:textColor="@color/colorLightGray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                app:layout_constraintTop_toBottomOf="@+id/imageProfile" />
 
             <Button
                 android:id="@+id/buttonFollow"

@@ -5,12 +5,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.polarproject.R;
 import com.example.polarproject.User;
 
@@ -36,12 +39,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public TextView textView;
         public RelativeLayout parentLayout;
         public TextView textViewIsFollowed;
+        public ImageView imageView;
 
         public MyViewHolder(View itemView){
             super(itemView);
             textView = itemView.findViewById(R.id.textView2);
             textViewIsFollowed = itemView.findViewById(R.id.textViewFollowed);
             parentLayout = itemView.findViewById(R.id.parent_layout);
+            imageView = itemView.findViewById(R.id.image);
         }
     }
 
@@ -90,6 +95,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 callbackInterface.itemClicked(user);
             }
         });
+
+        try
+        {
+            Glide.with(context).load("https://polarapp-pictures.s3.eu-north-1.amazonaws.com/" + user.getID()).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).placeholder(R.drawable.userdefaultimagecropped).into(holder.imageView);
+        }
+        catch (Exception e)
+        {
+            Log.d("USUSUS", "Glide error!");
+        }
     }
 
     @Override

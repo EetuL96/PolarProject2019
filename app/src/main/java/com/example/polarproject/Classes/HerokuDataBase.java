@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -125,6 +126,17 @@ public class HerokuDataBase {
     {
         void getUserAndCheckIfFollowed(User user);
     }
+
+    public void setDatabaseSetImageListener(DatabaseSetImageListener listener)
+    {
+        this.callbackInterface10 = listener;
+    }
+
+    public interface DatabaseSetImageListener
+    {
+        void imageSetSuccess();
+        void imageSetError();
+    }
     DataBaseLoginListener callbackInterface = null;
     DatabaseRegisterListener callbackInterface2 = null;
     DataBaseAllUsersListener callbackInterface3 = null;
@@ -134,6 +146,7 @@ public class HerokuDataBase {
     DatabaseGetAllUserAndCheckIfFollowedListener callbackInterface7 = null;
     DatabaseSearchUserByEmailAndGetFollowedLister callbackInterface8 = null;
     DatabaseUnfollowListener callbackInterface9 = null;
+    DatabaseSetImageListener callbackInterface10 = null;
 
     public interface DatabaseUnfollowListener
     {
@@ -535,42 +548,32 @@ public class HerokuDataBase {
     }
 
     //TODO Create method that stores image to database
-    public void sendPicture(Bitmap bitmap, Context context)
+    //TODO Create interface
+    public void sendPicture(Bitmap bitmap, String myId)
     {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+        Log.d("HDHDHD", "Bitmap encoding completed!");
+        Log.d("HDHDHD", encodedImage);
+
 
         String url = "https://polarapp-oamk.herokuapp.com/image-upload";
         JSONObject js = new JSONObject();
         try
         {
-            File f = new File(context.getCacheDir(), "filetest");
-            try
-            {
-                f.createNewFile();
-
-                //Convert bitmap to byte array
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-                byte[] bitmapdata = bos.toByteArray();
-
-                //write the bytes in file
-                FileOutputStream fos = new FileOutputStream(f);
-                fos.write(bitmapdata);
-                fos.flush();
-                fos.close();
-                Log.d("NHNHNH", "File created");
-            }
-            catch (Exception e)
-            {
-                Log.d("NHNHNH", "Error while creating file");
-            }
-            js.put("image", f);
-
-
+            js.put("image", encodedImage);
+            js.put("myId", myId);
+            Log.d("MPMPMP", "1 LOL");
         }
-        catch (JSONException e) {
+        catch (JSONException e)
+        {
             e.printStackTrace();
             Log.d("MPMPMP", e.getMessage());
         }
+        Log.d("MPMPMP", "1 LOL");
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, url, js, new Response.Listener<JSONObject>() {
 
@@ -578,12 +581,16 @@ public class HerokuDataBase {
                     public void onResponse(JSONObject jsonObject) {
                         try
                         {
-                            String imageUrl = jsonObject.getString("imageUrl");
+                            String imageUrl = jsonObject.getString("msg");
+                            Log.d("MPMPMP", "RESPONSE");
                             Log.d("MPMPMP", imageUrl);
+                            callbackInterface10.imageSetSuccess();
                         }
                         catch (JSONException e)
                         {
+                            Log.d("MPMPMP", "RESPONSE ERROR");
                             Log.d("MPMPMP", e.getMessage());
+                            callbackInterface10.imageSetError();
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -596,17 +603,10 @@ public class HerokuDataBase {
         mQueue.add(jsonObjectRequest);
     }
 
-    //TODO create method that unfollows
+
     public void unFollow(String myId, String targetId)
     {
         Log.d("BBBB", "myId: " + myId + " targetId: " + targetId);
-        /*JSONObject js = new JSONObject();
-        try {
-            js.put("myId", myId);
-            js.put("targetId", targetId);
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }*/
         String url = "https://polarapp-oamk.herokuapp.com/follows/myId/"+myId+ "/targetId/" + targetId;
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.DELETE,url, null,

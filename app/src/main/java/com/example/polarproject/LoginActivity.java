@@ -2,6 +2,7 @@ package com.example.polarproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.input.InputManager;
@@ -52,6 +53,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
 
         herokuDataBase = new HerokuDataBase(this);
         herokuDataBase.setDatabaseLoginListener(this);
+
     }
 
     @Override

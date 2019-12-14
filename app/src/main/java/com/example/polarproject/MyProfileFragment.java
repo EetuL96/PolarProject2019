@@ -17,7 +17,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.polarproject.Adapters.MyProfileFragmentStateAdapter;
 import com.example.polarproject.Classes.HerokuDataBase;
 import com.example.polarproject.Classes.PictureInterface;
@@ -27,7 +30,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class MyProfileFragment extends Fragment implements TabLayoutMediator.TabConfigurationStrategy, PictureInterface {
+public class MyProfileFragment extends Fragment implements TabLayoutMediator.TabConfigurationStrategy, PictureInterface, HerokuDataBase.DatabaseSetImageListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -78,6 +81,7 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
         activity.setPictureInterface(this);
 
         herokuDataBase = new HerokuDataBase(getActivity().getApplicationContext());
+        herokuDataBase.setDatabaseSetImageListener(this);
 
         imageProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,17 +93,15 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
             }
         });
 
-        //TODO send picture to database
-        /*try
+        try
         {
-            Bitmap pic = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.bigchungus);
-            herokuDataBase.sendPicture(pic, getActivity().getApplicationContext());
-
+            Glide.with(this).load("https://polarapp-pictures.s3.eu-north-1.amazonaws.com/" + user.getID()).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).placeholder(R.drawable.userdefaultimagecropped).into(imageProfile);
         }
         catch (Exception e)
         {
-            Log.d("OLOLOL", e.getMessage());
-        }*/
+            Log.d("USUSUS", "Glide error!");
+        }
+
 
         return rootView;
     }
@@ -161,7 +163,36 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
     @Override
     public void getData(Bitmap pic) {
         Log.d("WEWEWE", "MyProfileFragment getData()");
+        herokuDataBase.sendPicture(pic, user.getID());
         imageProfile.setImageBitmap(pic);
+    }
+
+    //TODO Fix bug when loading image first time
+    @Override
+    public void imageSetSuccess() {
+        Log.d("KLKLKL", "MyProf imageSetSuccess");
+        try
+        {
+            //Glide.with(this).load("https://polarapp-pictures.s3.eu-north-1.amazonaws.com/" + user.getID()).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).placeholder(R.drawable.userdefaultimagecropped).into(imageProfile);
+            Toast.makeText(getContext(), "Image Saved successfully", Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e)
+        {
+
+        }
+    }
+
+    @Override
+    public void imageSetError() {
+        Log.d("KLKLKL", "MyProf imageSetError");
+        try
+        {
+            Toast.makeText(getContext(), "Image saving failed...", Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e)
+        {
+
+        }
     }
 
 

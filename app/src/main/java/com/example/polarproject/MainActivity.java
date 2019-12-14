@@ -146,10 +146,11 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 || super.onSupportNavigateUp();
     }
 
+    //TODO handle back button
     @Override
     public void onBackPressed() {
-        this.finish();
-        System.exit(0);
+        //this.finish();
+        //System.exit(0);
     }
 
 
