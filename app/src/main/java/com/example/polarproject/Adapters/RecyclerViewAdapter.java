@@ -1,6 +1,7 @@
 package com.example.polarproject.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,6 +93,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(View view) {
                 User user = userList.get(position);
                 Log.d("LLL", userList.get(position).getEmail() + "Clicked!");
+                holder.parentLayout.setBackgroundColor(context.getResources().getColor(R.color.colorBlue));
                 callbackInterface.itemClicked(user);
             }
         });
