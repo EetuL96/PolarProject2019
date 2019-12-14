@@ -1,8 +1,10 @@
 package com.example.polarproject;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -154,6 +156,36 @@ public class RoutesFragment extends Fragment {
                                     mListener.openRoute(route.getId());
                                 }
                             });
+                            lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                                @Override
+                                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                    Log.d("ALALAL", "onItemLongClick!");
+                                    Route route = (Route) adapterView.getItemAtPosition(i);
+                                    Log.d("ALALAL", route.getDate());
+
+                                    //TODO create alert dialog
+                                    AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
+                                    adb.setTitle("Are you sure you want to delete: " + route.getDate() + "?");
+
+                                    adb.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            Log.d("ALALAL", "Yes Button Clicked!");
+                                        }
+                                    });
+
+                                    adb.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            Log.d("ALALAL", "Cancel Button Clicked!");
+                                        }
+                                    });
+
+
+                                    adb.show();
+                                    return true;
+                                }
+                            });
                         }
                         catch (Exception e)
                         {
@@ -217,16 +249,7 @@ public class RoutesFragment extends Fragment {
             return true;
         }
     }
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
