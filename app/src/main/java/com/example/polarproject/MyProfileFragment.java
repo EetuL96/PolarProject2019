@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -164,7 +166,9 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
     public void getData(Bitmap pic) {
         Log.d("WEWEWE", "MyProfileFragment getData()");
         herokuDataBase.sendPicture(pic, user.getID());
-        imageProfile.setImageBitmap(pic);
+        Drawable d = new BitmapDrawable(pic);
+        //imageProfile.setImageBitmap(pic);
+        Glide.with(this).load("").diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).placeholder(d).into(imageProfile);
     }
 
     //TODO Fix bug when loading image first time
