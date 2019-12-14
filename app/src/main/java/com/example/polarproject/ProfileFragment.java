@@ -232,6 +232,11 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
 
     }
 
+    public User getProfileUser()
+    {
+        return this.profileUser;
+    }
+
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);

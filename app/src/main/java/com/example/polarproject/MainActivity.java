@@ -3,7 +3,6 @@ package com.example.polarproject;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,19 +25,14 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.polarproject.Adapters.RecyclerViewAdapter;
-import com.example.polarproject.Classes.HerokuDataBase;
 import com.example.polarproject.Classes.PictureInterface;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.internal.NavigationMenu;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.FileNotFoundException;
@@ -54,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
     AppBarConfiguration appBarConfiguration;
     BottomNavigationView bottomNavigationView;
     PictureInterface pictureInterface;
+
     boolean drawerIsOpen = false;
 
     @Override
@@ -76,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         navView.setNavigationItemSelectedListener(this);
 
 
-        //TEST
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
@@ -131,8 +125,8 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         navController.navigate(R.id.routesFragment);
         navController.addOnDestinationChangedListener(this);
 
-
     }
+
 
     public void setPictureInterface(PictureInterface pictureInterface)
     {
@@ -162,11 +156,6 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
     @Override
     public void openRoute(String routeId) {
-        //Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-        //intent.putExtra("routeId", routeId);
-        //MainActivity.this.startActivity(intent);
-        //MainActivity.this.finish();
-
         Bundle bundle = new Bundle();
         bundle.putSerializable("routeId", routeId);
         navController.navigate(R.id.mapsActivity, bundle);
@@ -177,10 +166,11 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         navController.navigate(R.id.startRunFragment);
         drawerLayout.closeDrawer(GravityCompat.START);
     }
-  
+
+
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Log.d("FRFRFR", menuItem.toString());
         switch (menuItem.getItemId()) {
 
             case R.id.drawer_myprofile: {
@@ -298,8 +288,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
     @Override
     public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
-        Log.d("ASAS", "OnDestinationChanged");
-        Log.d("ASAS", destination.getNavigatorName());
+
         if (destination == navController.getGraph().findNode(R.id.profileFragment) || destination == navController.getGraph().findNode(R.id.routesRecycleFragment))
         {
             Log.d("ASAS", "Profile Fragment!");

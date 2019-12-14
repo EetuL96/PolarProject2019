@@ -6,7 +6,8 @@
         android:id="@+id/group1">
         <item
             android:id="@+id/drawer_myprofile"
-            android:title="My Profile" />
+            android:title="My Profile"
+            android:icon="@drawable/ic_person_white_24dp"/>
     </group>
 
 
@@ -14,10 +15,13 @@
         android:id="@+id/group2">
         <item
             android:id="@+id/drawer_new_run"
-            android:title="New Route" />
+            android:title="New Route"
+            android:icon="@drawable/ic_fiber_new_white_24dp"/>
         <item
             android:id="@+id/drawer_routes"
-            android:title="My Routes" />
+            android:title="My Routes"
+            android:icon="@drawable/ic_transform_white_24dp"
+            />
 
 
     </group>
@@ -26,16 +30,20 @@
         android:id="@+id/group3">
         <item
             android:id="@+id/drawer_following"
-            android:title="Following" />
+            android:title="Following"
+            android:icon="@drawable/ic_following_white_24dp"/>
         <item
             android:id="@+id/drawer_search_users"
-            android:title="Search Users" />
+            android:title="Search Users"
+            android:icon="@drawable/ic_search_white_24dp"
+            />
 
     </group>
 
     <group android:id="@+id/group4">
         <item
             android:id="@+id/drawer_logout"
-            android:title="Log Out" />
+            android:title="Log Out"
+            android:icon="@drawable/ic_logout_white_24dp"/>
     </group>
 </menu>
