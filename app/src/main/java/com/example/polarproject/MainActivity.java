@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
     boolean drawerIsOpen = false;
 
+    User profileUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
 
         appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.createMapFragment, R.id.searchUsersFragment, R.id.followingFragment, R.id.routesRecycleFragment)
+                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.createMapFragment, R.id.searchUsersFragment, R.id.followingFragment)
                         .setDrawerLayout(drawerLayout)
                         .build();
 
@@ -112,11 +114,15 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 {
                     case R.id.bottom_stats:
                         Log.d("HSHSHS", "Bottom Navigation Stats Clicked!");
-                        //navController.navigate(R.id.action_routesRecycleFragment_to_profileFragment);
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putSerializable("name", profileUser);
+                        navController.navigate(R.id.profileFragment, bundle1);
                         break;
                     case R.id.botton_routes:
                         Log.d("HSHSHS", "Bottom Navigation Routes Clicked!");
-                        //navController.navigate(R.id.action_profileFragment_to_routesRecycleFragment);
+                        Bundle bundle2 = new Bundle();
+                        bundle2.putSerializable("user", profileUser);
+                        navController.navigate(R.id.routesRecycleFragment, bundle2);
                         break;
                 }
                 return false;
@@ -152,6 +158,14 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    //TODO send profileuser to routesrecycleview
+    @Override
+    public void ProfileUserSet(User user) {
+        Log.d("MXMXMX", user.getID());
+        Log.d("MXMXMX", user.getEmail());
+        profileUser = user;
     }
 
     @Override
@@ -289,10 +303,12 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
     @Override
     public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
 
+
         if (destination == navController.getGraph().findNode(R.id.profileFragment) || destination == navController.getGraph().findNode(R.id.routesRecycleFragment))
         {
             Log.d("ASAS", "Profile Fragment!");
             bottomNavigationView.setVisibility(View.VISIBLE);
+
         }
         else
         {

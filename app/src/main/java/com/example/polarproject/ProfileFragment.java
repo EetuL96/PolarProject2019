@@ -90,7 +90,8 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
         TextView tv = rootView.findViewById(R.id.textViewName);
 
         profileUser = (User) getArguments().getSerializable("name");
-        Log.d("BBBB", profileUser.getID());
+        //TODO
+        mListener.ProfileUserSet(profileUser);
 
         tv.setText(profileUser.getEmail());
 
@@ -232,13 +233,9 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
 
     }
 
-    public User getProfileUser()
-    {
-        return this.profileUser;
-    }
-
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+        void ProfileUserSet(User user);
     }
 }

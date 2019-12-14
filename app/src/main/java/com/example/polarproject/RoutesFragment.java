@@ -152,10 +152,6 @@ public class RoutesFragment extends Fragment {
 
                                     Route route = (Route) parent.getItemAtPosition(position);
                                     mListener.openRoute(route.getId());
-                /*Bundle bundle = new Bundle();
-                bundle.putSerializable("route",route);
-                Navigation.findNavController(view).navigate(xxx, bundle);
-                players.clear();*/
                                 }
                             });
                         }
@@ -196,6 +192,7 @@ public class RoutesFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
 
 
     public boolean checkLocationPermission(){

@@ -29,6 +29,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -118,6 +119,18 @@ public class HerokuDataBase {
         void registerError();
     }
 
+    public interface DataBaseGetRoutesByIdListener
+    {
+        void getRoute(Route route);
+        void getRoutesReady();
+        void getRouteError();
+    }
+
+    public void setDatabaseGetRoutesListener(DataBaseGetRoutesByIdListener listener)
+    {
+        this.callbackInterface11 = listener;
+    }
+
     public void setDatabaseGetAllUserAndCheckIfFollowedListener(DatabaseGetAllUserAndCheckIfFollowedListener listener)
     {
         this.callbackInterface7 = listener;
@@ -147,6 +160,7 @@ public class HerokuDataBase {
     DatabaseSearchUserByEmailAndGetFollowedLister callbackInterface8 = null;
     DatabaseUnfollowListener callbackInterface9 = null;
     DatabaseSetImageListener callbackInterface10 = null;
+    DataBaseGetRoutesByIdListener callbackInterface11 = null;
 
     public interface DatabaseUnfollowListener
     {
@@ -547,8 +561,6 @@ public class HerokuDataBase {
         Log.d("LOL", "FINISH");
     }
 
-    //TODO Create method that stores image to database
-    //TODO Create interface
     public void sendPicture(Bitmap bitmap, String myId)
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -643,6 +655,55 @@ public class HerokuDataBase {
         mQueue.add(jsonObjReq);
     }
 
+    //TODO CREATE METHOD AND INTERFACE THAT GETROUTES BY ID
+    public void getRoutesByUserId(String id)
+    {
+        Log.d("JGJGJG", "START");
+        String url = "https://polarapp-oamk.herokuapp.com/routes/owner/" + id;
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try
+                        {
+                            Log.d("JGJGJG", "RESPONSE START");
+                            int i = 0;
+                            while (i < response.length())
+                            {
+                                JSONObject jsonObject = response.getJSONObject(i);
+
+                                String routeId = jsonObject.getString("_id");
+                                String ownerId = jsonObject.getString("owner");
+                                String date = jsonObject.getString("date");
+                                double distance = jsonObject.getDouble("distance");
+                                int time = jsonObject.getInt("time");
+
+                                Route route = new Route();
+                                route.setDate(date);
+                                route.setDistance(distance);
+                                route.setId(routeId);
+                                route.setTime(time);
+                                callbackInterface11.getRoute(route);
+                                i++;
+                            }
+                            callbackInterface11.getRoutesReady();
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                            Log.d("JGJGJG", e.toString());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("JGJGJG", error.toString());
+                    }
+                });
+        mQueue.add(jsonArrayRequest);
+    }
 }
 
 
