@@ -37,7 +37,7 @@
                 android:textColorHint="@color/colorWhite"
                 android:inputType="textEmailAddress"
                 android:paddingLeft="8dp"
-                android:hint="Type email here..."></EditText>
+                android:hint="Type username here..."></EditText>
 
             <Button
                 android:id="@+id/buttonSearch"

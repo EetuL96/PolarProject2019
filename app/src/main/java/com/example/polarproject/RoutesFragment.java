@@ -92,17 +92,9 @@ public class RoutesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View rootView = inflater.inflate(R.layout.fragment_routes, container, false);
-
-        /*Route route1 = new Route("Route 1");
-        Route route2 = new Route("Route 2");
-        Route route3 = new Route("Route 3");
-        routes.add(route1);
-        routes.add(route2);
-        routes.add(route3);*/
         mQueue = Volley.newRequestQueue(getContext());
-
         lv = rootView.findViewById(R.id.listViewRoutes);
         newRouteButton = rootView.findViewById(R.id.newRouteButton);
         newRouteButton.setOnClickListener(new View.OnClickListener() {
