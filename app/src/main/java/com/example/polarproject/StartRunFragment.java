@@ -142,6 +142,7 @@ public class StartRunFragment extends Fragment {
                     //stopSensors();
                     if(dataPointArrayList.size()!=0){
                         saveRoute(dataPointArrayList);
+                        updateUser(dataPointArrayList);
                         dataPointArrayList = new ArrayList<>();
                     }
                 }
@@ -207,6 +208,56 @@ public class StartRunFragment extends Fragment {
             getContext().unregisterReceiver(receiver);
             sensors = false;
         }
+    }
+
+    public void updateUser(ArrayList<RouteDataPoint> arrayList){
+        User user = ((Application) getActivity().getApplication()).getUser();
+        RouteDataPoint dp = arrayList.get(arrayList.size()-1);
+        user.setKilometersRun(user.getKilometersRun()+distance);
+        user.setTotalTime(user.getTotalTime()+dp.getTime());
+        user.setAverageSpeed(user.getKilometersRun()/(user.getTotalTime()/1000/3600));
+        user.setRunsCompleted(user.getRunsCompleted()+1);
+        user.setAverageDistance(user.getKilometersRun()/user.getRunsCompleted());
+        if(user.getLongestRun()<distance){
+            user.setLongestRun(distance);
+        }
+        ((Application) getActivity().getApplication()).setUser(user);
+        JSONObject js = new JSONObject();
+        try {
+            js.put("kilometersrun", user.getKilometersRun());
+            js.put("totaltime", user.getTotalTime()); //ms
+            js.put("averagespeed", user.getAverageSpeed()); //km/s
+            js.put("runscompleted", user.getRunsCompleted());
+            js.put("longestrun", user.getLongestRun());
+            js.put("averagedistance", user.getAverageDistance());
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.PUT,
+                "https://polarapp-oamk.herokuapp.com/users/"+user.getID(),
+                js,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("kimmo", "onResponse: success");
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("kimmo", "onErrorResponse: error");
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        queue.add(jsonObjReq);
     }
 
     public void saveRoute(ArrayList<RouteDataPoint> arrayList){
