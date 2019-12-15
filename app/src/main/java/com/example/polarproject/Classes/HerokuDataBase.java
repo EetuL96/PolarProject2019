@@ -679,6 +679,9 @@ public class HerokuDataBase {
                                 double distance = jsonObject.getDouble("distance");
                                 int time = jsonObject.getInt("time");
 
+                                //TEST
+                                //int test = jsonObject.getInt("");
+
                                 Route route = new Route();
                                 route.setDate(date);
                                 route.setDistance(distance);

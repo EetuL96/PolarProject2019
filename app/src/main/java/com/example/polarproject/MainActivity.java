@@ -146,11 +146,11 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 || super.onSupportNavigateUp();
     }
 
-    //TODO handle back button
+
     @Override
     public void onBackPressed() {
-        //this.finish();
-        //System.exit(0);
+        this.finish();
+        System.exit(0);
     }
 
 
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
     }
 
-    //TODO send profileuser to routesrecycleview
+
     @Override
     public void ProfileUserSet(User user) {
         Log.d("MXMXMX", user.getID());
@@ -187,7 +187,8 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
 
-            case R.id.drawer_myprofile: {
+            case R.id.drawer_myprofile:{
+                navController.popBackStack();
                 navController.navigate(R.id.myProfileFragment);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 break;
@@ -195,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
             case R.id.drawer_new_run: {
                 if(checkLocationPermission()&&checkBTPermission()){
+                    navController.popBackStack();
                     navController.navigate(R.id.startRunFragment);
                     drawerLayout.closeDrawer(GravityCompat.START);
                 }
@@ -202,16 +204,19 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
             }
 
             case R.id.drawer_routes: {
+                navController.popBackStack();
                 navController.navigate(R.id.routesFragment);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             }
             case R.id.drawer_following: {
+                navController.popBackStack();
                 navController.navigate(R.id.followingFragment);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             }
             case R.id.drawer_search_users: {
+                navController.popBackStack();
                 navController.navigate(R.id.searchUsersFragment);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 break;
