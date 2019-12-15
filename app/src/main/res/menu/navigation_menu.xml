@@ -8,6 +8,11 @@
             android:id="@+id/drawer_myprofile"
             android:title="My Profile"
             android:icon="@drawable/ic_person_white_24dp"/>
+
+        <item
+            android:id="@+id/drawer_settings"
+            android:title="Settings"
+            android:icon="@drawable/ic_settings_white_24dp"/>
     </group>
 
 

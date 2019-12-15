@@ -655,6 +655,7 @@ public class HerokuDataBase {
         mQueue.add(jsonObjReq);
     }
 
+
     //TODO CREATE METHOD AND INTERFACE THAT GETROUTES BY ID
     public void getRoutesByUserId(String id)
     {
@@ -706,6 +707,45 @@ public class HerokuDataBase {
                     }
                 });
         mQueue.add(jsonArrayRequest);
+    }
+
+    public void deleteUser(String myId)
+    {
+        Log.d("DQDQDQ", myId);
+        String url = "https://polarapp-oamk.herokuapp.com/delete...." + myId;
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.DELETE,url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            String msg = response.getString("msg");
+                            Log.d("BBBB", "UnFollowed! " + msg);
+                            callbackInterface9.userUnfollowed();
+                        }
+                        catch (Exception e){
+
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("BBBB", error.getMessage());
+                callbackInterface9.userUnfollowedError();
+            }
+        })
+        {
+            /*@Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("X-HTTP-Method-Override", "DELETE");
+                return headers;
+            }*/
+        };
+        mQueue.add(jsonObjReq);
     }
 }
 

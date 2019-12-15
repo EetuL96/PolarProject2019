@@ -40,7 +40,7 @@ import java.io.InputStream;
 
 
 
-public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener, FollowingFragment.OnFragmentInteractionListener, RecyclerViewAdapter.ListenerInterface, NavController.OnDestinationChangedListener, RoutesRecycleFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements TestFragment.OnFragmentInteractionListener, TestFragment2.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener, MyProfileFragment.OnFragmentInteractionListener, CreateMapFragment.OnFragmentInteractionListener, RoutesFragment.OnFragmentInteractionListener, StartRunFragment.OnFragmentInteractionListener, SearchUsersFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener, FollowingFragment.OnFragmentInteractionListener, RecyclerViewAdapter.ListenerInterface, NavController.OnDestinationChangedListener, RoutesRecycleFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener {
 
     private NavController navController;
     private DrawerLayout drawerLayout;
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
 
 
         appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.createMapFragment, R.id.searchUsersFragment, R.id.followingFragment)
+                new AppBarConfiguration.Builder(R.id.startRunFragment, R.id.myProfileFragment, R.id.routesFragment, R.id.createMapFragment, R.id.searchUsersFragment, R.id.followingFragment, R.id.settingsFragment)
                         .setDrawerLayout(drawerLayout)
                         .build();
 
@@ -191,6 +191,14 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 navController.popBackStack();
                 navController.navigate(R.id.myProfileFragment);
                 drawerLayout.closeDrawer(GravityCompat.START);
+                break;
+            }
+
+            case R.id.drawer_settings: {
+                    navController.popBackStack();
+                    navController.navigate(R.id.settingsFragment);
+                    drawerLayout.closeDrawer(GravityCompat.START);
+
                 break;
             }
 

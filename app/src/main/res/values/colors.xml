@@ -15,6 +15,7 @@
     <color name="colorLightBlue">#284B63</color>
     <color name="colorLightGray">#EEF0EB</color>
     <color name="colorLightGreen">#689F38</color>
+    <color name="colorWarning">#FF0000</color>
 
 
 </resources>
