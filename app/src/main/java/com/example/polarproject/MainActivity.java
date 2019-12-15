@@ -116,12 +116,14 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                         Log.d("HSHSHS", "Bottom Navigation Stats Clicked!");
                         Bundle bundle1 = new Bundle();
                         bundle1.putSerializable("name", profileUser);
+                        navController.popBackStack();
                         navController.navigate(R.id.profileFragment, bundle1);
                         break;
                     case R.id.botton_routes:
                         Log.d("HSHSHS", "Bottom Navigation Routes Clicked!");
                         Bundle bundle2 = new Bundle();
                         bundle2.putSerializable("user", profileUser);
+                        navController.popBackStack();
                         navController.navigate(R.id.routesRecycleFragment, bundle2);
                         break;
                 }

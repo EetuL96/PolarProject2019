@@ -45,6 +45,7 @@
         android:label="Following"
         tools:layout="@layout/fragment_following" />
 
+
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.polarproject.ProfileFragment"
@@ -52,9 +53,10 @@
         android:label="Profile">
         <action
             android:id="@+id/action_profileFragment_to_routesRecycleFragment"
-            app:destination="@id/routesRecycleFragment" />
+            app:destination="@id/routesRecycleFragment"
+            app:popUpTo="@id/searchUsersFragment"
+            />
     </fragment>
-
     <fragment
         android:id="@+id/routesRecycleFragment"
         android:name="com.example.polarproject.RoutesRecycleFragment"
@@ -64,6 +66,9 @@
             android:id="@+id/action_routesRecycleFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
     </fragment>
+
+
+
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.polarproject.SettingsFragment"
