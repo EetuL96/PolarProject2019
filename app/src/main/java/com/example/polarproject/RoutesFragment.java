@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.polarproject.Adapters.RouteListAdapter;
+import com.example.polarproject.Classes.HerokuDataBase;
 import com.example.polarproject.Classes.Route;
 
 import org.json.JSONArray;
@@ -39,31 +41,23 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RoutesFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RoutesFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class RoutesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class RoutesFragment extends Fragment implements HerokuDataBase.DeleteRouteListener {
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private OnFragmentInteractionListener mListener;
-    private ArrayList<Route> routes = new ArrayList<>();
+    //private ArrayList<Route> routes = new ArrayList<>();
     private RouteListAdapter routeListAdapter;
     private ConstraintLayout newRouteButton;
     ListView lv = null;
     RequestQueue mQueue;
+
+    HerokuDataBase herokuDataBase;
 
 
     public RoutesFragment() {
@@ -106,6 +100,9 @@ public class RoutesFragment extends Fragment {
             }
         });
 
+        herokuDataBase = new HerokuDataBase(getContext());
+        herokuDataBase.setDeleteRouteListener(this);
+
         getMyRoutes(((Application) getActivity().getApplication()).getUser().getID());
         return rootView;
     }
@@ -120,6 +117,7 @@ public class RoutesFragment extends Fragment {
                     public void onResponse(JSONArray response) {
                         try
                         {
+                            ArrayList<Route> routes = new ArrayList<>();
                             for (int i = 0; i < response.length(); i++) {
                                 Route route = new Route();
                                 JSONObject jsObject = response.getJSONObject(i);
@@ -149,7 +147,6 @@ public class RoutesFragment extends Fragment {
                                     Route route = (Route) adapterView.getItemAtPosition(i);
                                     Log.d("ALALAL", route.getDate());
 
-                                    //TODO create alert dialog
                                     AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
                                     adb.setTitle("Are you sure you want to delete: " + route.getDate() + "?");
 
@@ -157,6 +154,7 @@ public class RoutesFragment extends Fragment {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
                                             Log.d("ALALAL", "Yes Button Clicked!");
+                                            herokuDataBase.deleteRoute(route.getId());
                                         }
                                     });
 
@@ -187,7 +185,6 @@ public class RoutesFragment extends Fragment {
         mQueue.add(jsonArrayRequest);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -234,6 +231,24 @@ public class RoutesFragment extends Fragment {
         else{
             return true;
         }
+    }
+
+    @Override
+    public void deleteRouteSuccess() {
+        Log.d("ESJONEN", "deleteRouteSuccess");
+
+        Toast.makeText(getContext(), "Route deleted successfully!", Toast.LENGTH_LONG).show();
+        //routes.clear();
+        routeListAdapter.clear();
+        routeListAdapter.notifyDataSetChanged();
+        lv.setAdapter(null);
+        getMyRoutes(((Application) getActivity().getApplication()).getUser().getID());
+
+    }
+
+    @Override
+    public void deleteRouteError() {
+        Toast.makeText(getContext(), "Couldn't delete route...", Toast.LENGTH_SHORT);
     }
 
     public interface OnFragmentInteractionListener {

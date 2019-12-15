@@ -173,6 +173,18 @@ public class HerokuDataBase {
     DatabaseSetImageListener callbackInterface10 = null;
     DataBaseGetRoutesByIdListener callbackInterface11 = null;
     DeleteUserListener callbackInterface12 = null;
+    DeleteRouteListener deleteRouteListener = null;
+
+    public void setDeleteRouteListener(DeleteRouteListener listener)
+    {
+        this.deleteRouteListener = listener;
+    }
+
+    public interface DeleteRouteListener
+    {
+        void deleteRouteSuccess();
+        void deleteRouteError();
+    }
 
     public interface DatabaseUnfollowListener
     {
@@ -721,7 +733,7 @@ public class HerokuDataBase {
         mQueue.add(jsonArrayRequest);
     }
 
-    //TODO Delete user
+
     public void deleteUser(String myId)
     {
         Log.d("DQDQDQ", myId);
@@ -756,6 +768,36 @@ public class HerokuDataBase {
                 return headers;
             }*/
         };
+        mQueue.add(jsonObjReq);
+    }
+
+    public void deleteRoute(String routeId)
+    {
+        String url = "https://polarapp-oamk.herokuapp.com/routes/" + routeId;
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.DELETE,url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            String msg = response.getString("msg");
+                            deleteRouteListener.deleteRouteSuccess();
+                            Log.d("SYSYSYSY", "deleteRoue Response 1");
+                            Log.d("SYSYSYSY", msg);
+                        }
+                        catch (Exception e){
+                            deleteRouteListener.deleteRouteError();
+                        }
+                        deleteRouteListener.deleteRouteSuccess();
+                        Log.d("SYSYSYSY", "deleteRoue Response 2");
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                deleteRouteListener.deleteRouteError();
+            }
+        });
         mQueue.add(jsonObjReq);
     }
 }
