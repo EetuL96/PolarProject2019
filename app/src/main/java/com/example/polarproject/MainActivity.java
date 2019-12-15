@@ -113,18 +113,34 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
                 switch (item.getItemId())
                 {
                     case R.id.bottom_stats:
-                        Log.d("HSHSHS", "Bottom Navigation Stats Clicked!");
-                        Bundle bundle1 = new Bundle();
-                        bundle1.putSerializable("name", profileUser);
-                        navController.popBackStack();
-                        navController.navigate(R.id.profileFragment, bundle1);
+                        try
+                        {
+                            Log.d("HSHSHS", "Bottom Navigation Stats Clicked!");
+                            Bundle bundle1 = new Bundle();
+                            bundle1.putSerializable("name", profileUser);
+                            navController.popBackStack();
+                            navController.navigate(R.id.profileFragment, bundle1);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.d("HSHSHSH", e.getMessage());
+                        }
                         break;
+
                     case R.id.botton_routes:
-                        Log.d("HSHSHS", "Bottom Navigation Routes Clicked!");
-                        Bundle bundle2 = new Bundle();
-                        bundle2.putSerializable("user", profileUser);
-                        navController.popBackStack();
-                        navController.navigate(R.id.routesRecycleFragment, bundle2);
+                        try
+                        {
+                            Log.d("HSHSHS", "Bottom Navigation Routes Clicked!");
+                            Bundle bundle2 = new Bundle();
+                            bundle2.putSerializable("user", profileUser);
+                            navController.popBackStack();
+                            navController.navigate(R.id.routesRecycleFragment, bundle2);
+
+                        }
+                        catch (Exception e)
+                        {
+                            Log.d("HSHSHSH", e.getMessage());
+                        }
                         break;
                 }
                 return false;

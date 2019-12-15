@@ -67,18 +67,9 @@ public class RoutesFragment extends Fragment {
 
 
     public RoutesFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RoutesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static RoutesFragment newInstance(String param1, String param2) {
         RoutesFragment fragment = new RoutesFragment();
         Bundle args = new Bundle();
@@ -148,12 +139,15 @@ public class RoutesFragment extends Fragment {
                             }
                             routeListAdapter = new RouteListAdapter(getContext(), routes);
                             lv.setAdapter(routeListAdapter);
+                            lv.setEnabled(true);
                             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 public void onItemClick(AdapterView<?> parent, View view,
                                                         int position, long id) {
 
+                                    lv.setEnabled(false);
                                     Route route = (Route) parent.getItemAtPosition(position);
                                     mListener.openRoute(route.getId());
+
                                 }
                             });
                             lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -255,5 +249,11 @@ public class RoutesFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
         void openRoute(String routeId);
         void newRoute();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        lv.setEnabled(true);
     }
 }

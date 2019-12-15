@@ -117,16 +117,23 @@ public class RoutesRecycleFragment extends Fragment implements HerokuDataBase.Da
     @Override
     public void getRoutesReady() {
         Log.d("FAFAFAFA", "getRoutes ready");
-        routeListAdapter = new RouteListAdapter(getContext(), routes);
-        lv.setAdapter(routeListAdapter);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
+        try {
+            routeListAdapter = new RouteListAdapter(getContext(), routes);
+            lv.setAdapter(routeListAdapter);
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View view,
+                                        int position, long id) {
 
-                Route route = (Route) parent.getItemAtPosition(position);
-                mListener.openRoute(route.getId());
-            }
-        });
+                    Route route = (Route) parent.getItemAtPosition(position);
+                    mListener.openRoute(route.getId());
+                }
+            });
+        }
+        catch (Exception e)
+        {
+
+        }
+
     }
 
     @Override

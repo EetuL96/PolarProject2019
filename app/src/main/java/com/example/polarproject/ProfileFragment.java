@@ -182,12 +182,14 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
             {
                 Application application = (Application) getContext().getApplicationContext();
                 User user = application.getUser();
+                profileUser.setIsFollowed(true);
                 herokuDataBase.createNewFollow(user.getID(), profileUser.getID());
             }
             else
             {
                 Application application = (Application) getContext().getApplicationContext();
                 User user = application.getUser();
+                profileUser.setIsFollowed(false);
                 herokuDataBase.unFollow(user.getID(), profileUser.getID());
             }
 
@@ -199,7 +201,6 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
         try
         {
             Toast.makeText(getContext(), "Followed: " + profileUser.getEmail(), Toast.LENGTH_SHORT).show();
-            profileUser.setIsFollowed(true);
             buttonFollow.setText("Unfollow");
         }
         catch (Exception e)
@@ -211,7 +212,7 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
 
     @Override
     public void userFollowError() {
-
+        profileUser.setIsFollowed(false);
     }
 
     @Override
@@ -219,7 +220,6 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
         try
         {
             Toast.makeText(getContext(), "UnFollowed: " + profileUser.getEmail(), Toast.LENGTH_SHORT).show();
-            profileUser.setIsFollowed(false);
             buttonFollow.setText("Follow");
         }
         catch (Exception e)
@@ -230,7 +230,7 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
 
     @Override
     public void userUnfollowedError() {
-
+        profileUser.setIsFollowed(true);
     }
 
 
