@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.polarproject.Classes.HerokuDataBase;
 
@@ -130,6 +131,14 @@ public class SettingsFragment extends Fragment implements HerokuDataBase.DeleteU
     @Override
     public void deleteUserFailed() {
         getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        try
+        {
+            Toast.makeText(getContext(), "User deletion failed...", Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e)
+        {
+
+        }
     }
 
     public interface OnFragmentInteractionListener {
