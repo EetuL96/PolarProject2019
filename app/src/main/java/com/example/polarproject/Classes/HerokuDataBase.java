@@ -150,6 +150,17 @@ public class HerokuDataBase {
         void imageSetSuccess();
         void imageSetError();
     }
+
+    public interface DeleteUserListener
+    {
+        void deleteUserSuccess();
+        void deleteUserFailed();
+    }
+
+    public void setDeleteUserListener(DeleteUserListener listener)
+    {
+        this.callbackInterface12 = listener;
+    }
     DataBaseLoginListener callbackInterface = null;
     DatabaseRegisterListener callbackInterface2 = null;
     DataBaseAllUsersListener callbackInterface3 = null;
@@ -161,6 +172,7 @@ public class HerokuDataBase {
     DatabaseUnfollowListener callbackInterface9 = null;
     DatabaseSetImageListener callbackInterface10 = null;
     DataBaseGetRoutesByIdListener callbackInterface11 = null;
+    DeleteUserListener callbackInterface12 = null;
 
     public interface DatabaseUnfollowListener
     {
@@ -709,10 +721,11 @@ public class HerokuDataBase {
         mQueue.add(jsonArrayRequest);
     }
 
+    //TODO Delete user
     public void deleteUser(String myId)
     {
         Log.d("DQDQDQ", myId);
-        String url = "https://polarapp-oamk.herokuapp.com/delete...." + myId;
+        String url = "https://polarapp-oamk.herokuapp.com/users/" + myId;
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.DELETE,url, null,
                 new Response.Listener<JSONObject>() {
@@ -720,11 +733,10 @@ public class HerokuDataBase {
                     public void onResponse(JSONObject response) {
                         try{
                             String msg = response.getString("msg");
-                            Log.d("BBBB", "UnFollowed! " + msg);
-                            callbackInterface9.userUnfollowed();
+                            callbackInterface12.deleteUserSuccess();
                         }
                         catch (Exception e){
-
+                            callbackInterface12.deleteUserFailed();
                         }
 
                     }
@@ -732,8 +744,7 @@ public class HerokuDataBase {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("BBBB", error.getMessage());
-                callbackInterface9.userUnfollowedError();
+                callbackInterface12.deleteUserFailed();
             }
         })
         {

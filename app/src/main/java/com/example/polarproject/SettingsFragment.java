@@ -3,6 +3,7 @@ package com.example.polarproject;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -12,10 +13,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 
+import com.example.polarproject.Classes.HerokuDataBase;
 
-public class SettingsFragment extends Fragment {
+
+public class SettingsFragment extends Fragment implements HerokuDataBase.DeleteUserListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -26,6 +30,8 @@ public class SettingsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     Button btnDelete;
+
+    HerokuDataBase herokuDataBase;
 
     public SettingsFragment() {
 
@@ -53,9 +59,11 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        herokuDataBase = new HerokuDataBase(getContext());
+        herokuDataBase.setDeleteUserListener(this);
+
         View parent = inflater.inflate(R.layout.fragment_settings, container, false);
         btnDelete = parent.findViewById(R.id.buttonDelete);
-
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,7 +77,10 @@ public class SettingsFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Log.d("LALALA", "Yes Button Clicked!");
+
                         //TODO DELETE USER FROM DATABASE
+                        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        herokuDataBase.deleteUser(((Application) getActivity().getApplication()).getUser().getID());
                     }
                 });
 
@@ -107,6 +118,18 @@ public class SettingsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void deleteUserSuccess() {
+        Intent i = new Intent(getActivity(), LoginActivity.class);
+        startActivity(i);
+        getActivity().finish();
+    }
+
+    @Override
+    public void deleteUserFailed() {
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     public interface OnFragmentInteractionListener {
