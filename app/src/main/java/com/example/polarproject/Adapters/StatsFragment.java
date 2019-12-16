@@ -32,14 +32,14 @@ public class StatsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Bundle args = getArguments();
+        User user = (User) getArguments().getSerializable("user");
         TextView textViewKMS = view.findViewById(R.id.textViewKms);
         TextView textViewTT = view.findViewById(R.id.textViewTotalTime);
         TextView textViewAS = view.findViewById(R.id.textViewAverageSpeed);
         TextView textViewRC = view.findViewById(R.id.textViewRunsCompleted);
         TextView textViewLR = view.findViewById(R.id.textViewLongestRun);
         TextView textViewAD = view.findViewById(R.id.textViewAverageDistance);
-        User user = ((Application) getActivity().getApplication()).getUser();
+        //User user = ((Application) getActivity().getApplication()).getUser();
 
         String kms = String.format("%.0f KM", user.getKilometersRun());
         String tt = (user.getTotalTime()/1000/3600) + " H";

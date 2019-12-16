@@ -344,6 +344,12 @@ public class HerokuDataBase {
             js.put("password", password);
             js.put("firstname", firstname);
             js.put("lastname", lastname);
+            js.put("averagedistance", 0.0);
+            js.put("averagespeed", 0.0);
+            js.put("kilometersrun", 0.0);
+            js.put("totaltime", 0);
+            js.put("runscompleted", 0);
+            js.put("longestrun", 0.0);
         }catch (JSONException e) {
             e.printStackTrace();
         }
@@ -531,6 +537,12 @@ public class HerokuDataBase {
                                 user.setID(id);
                                 user.setEmail(email);
                                 user.setIsFollowed(true);
+                                user.setAverageDistance(jsonObject.getDouble("averagedistance"));
+                                user.setAverageSpeed(jsonObject.getDouble("averagespeed"));
+                                user.setKilometersRun(jsonObject.getDouble("kilometersrun"));
+                                user.setTotalTime(jsonObject.getLong("totaltime"));
+                                user.setRunsCompleted(jsonObject.getInt("runscompleted"));
+                                user.setLongestRun(jsonObject.getDouble("longestrun"));
                                 callbackInterface6.userGetFollowed(user);
                                 Log.d("11111", user.getEmail());
                                 i++;
@@ -583,6 +595,12 @@ public class HerokuDataBase {
                                 User user = new User();
                                 user.setID(id);
                                 user.setEmail(email);
+                                user.setAverageDistance(jsonObject.getDouble("averagedistance"));
+                                user.setAverageSpeed(jsonObject.getDouble("averagespeed"));
+                                user.setKilometersRun(jsonObject.getDouble("kilometersrun"));
+                                user.setTotalTime(jsonObject.getLong("totaltime"));
+                                user.setRunsCompleted(jsonObject.getInt("runscompleted"));
+                                user.setLongestRun(jsonObject.getDouble("longestrun"));
                                 user.setIsFollowed(followed);
                                 if (followed)
                                 {
