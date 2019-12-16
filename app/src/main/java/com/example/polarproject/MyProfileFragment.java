@@ -112,6 +112,7 @@ public class MyProfileFragment extends Fragment implements TabLayoutMediator.Tab
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         fragmentStateAdapter = new MyProfileFragmentStateAdapter(this);
+        fragmentStateAdapter.setUser(user);
         viewPager = view.findViewById(R.id.pager);
         viewPager.setAdapter(fragmentStateAdapter);
 
