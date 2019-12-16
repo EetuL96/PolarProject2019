@@ -108,6 +108,7 @@ public class HerokuDataBase {
     public interface DataBaseLoginListener
     {
         void userByEmailSuccess(User user);
+        void sendToken(String token);
         void userByEmailFailed();
         void userByEmailError();
         void loginError();
@@ -279,7 +280,9 @@ public class HerokuDataBase {
                             Log.d("TOKEN", "Token: " + token);
                             if (auth)
                             {
+                                //TODO SEND TOKEN
                                 Log.d("LOL", "Login success!");
+                                callbackInterface.sendToken(token);
                                 getUserByEmail(email, token);
                             }
                             else

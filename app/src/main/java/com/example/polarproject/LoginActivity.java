@@ -37,6 +37,8 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
 
     HerokuDataBase herokuDataBase = null;
 
+    String token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,10 +100,16 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
 
     @Override
     public void userByEmailSuccess(User user) {
+        ((Application) LoginActivity.this.getApplication()).setToken(this.token);
         ((Application) LoginActivity.this.getApplication()).setUser(user);
         Intent i = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(i);
         finish();
+    }
+
+    @Override
+    public void sendToken(String token) {
+        this.token = token;
     }
 
     @Override

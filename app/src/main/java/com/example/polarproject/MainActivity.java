@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements TestFragment.OnFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Application app = (Application) getApplication();
+        Log.d("CVBN", app.getToken());
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         drawerLayout = findViewById(R.id.drawer_layout);
 

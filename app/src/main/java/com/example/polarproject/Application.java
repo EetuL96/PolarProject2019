@@ -13,4 +13,16 @@ public class Application extends android.app.Application {
     public User getUser() {
         return this.user;
     }
+
+    private String token;
+
+    public void setToken(String token)
+    {
+        this.token = token;
+    }
+
+    public String getToken()
+    {
+        return this.token;
+    }
 }
