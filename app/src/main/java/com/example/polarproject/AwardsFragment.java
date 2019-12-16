@@ -1,6 +1,7 @@
 package com.example.polarproject;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ import com.example.polarproject.Classes.HerokuDataBase;
 
 import java.util.ArrayList;
 
-public class AwardsFragment extends Fragment implements HerokuDataBase.AwardsListener{
+public class AwardsFragment extends Fragment implements HerokuDataBase.AwardsListener, AwardsViewAdapter.awardsListener {
 
     private RecyclerView recyclerView;
     private AwardsViewAdapter mAdapter;
@@ -51,6 +52,7 @@ public class AwardsFragment extends Fragment implements HerokuDataBase.AwardsLis
         layoutManager = new GridLayoutManager(getContext(), NUMBER_OF_COLUMNS);
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new AwardsViewAdapter(getContext(), dataset);
+        mAdapter.setAwardsListener(this);
         recyclerView.setAdapter(mAdapter);
 
         mAdapter.notifyDataSetChanged();
@@ -76,5 +78,10 @@ public class AwardsFragment extends Fragment implements HerokuDataBase.AwardsLis
     @Override
     public void AwardError() {
 
+    }
+
+    @Override
+    public void awardsItemClicked(Award award) {
+        Log.d("JKL", award.getName() + " Clicked");
     }
 }

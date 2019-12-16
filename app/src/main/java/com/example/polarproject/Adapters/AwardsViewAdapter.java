@@ -22,13 +22,24 @@ public class AwardsViewAdapter extends RecyclerView.Adapter<AwardsViewAdapter.Aw
 
     Context context;
     private ArrayList<Award> awardsList = new ArrayList<>();
+    private awardsListener callbackInterface = null;
 
     public AwardsViewAdapter(Context context, ArrayList<Award> list)
     {
         this.context = context;
         this.awardsList = list;
+
     }
 
+    public interface awardsListener
+    {
+        void awardsItemClicked(Award award);
+    }
+
+    public void setAwardsListener(awardsListener listener)
+    {
+        callbackInterface = listener;
+    }
 
     public static class AwardViewHolder extends RecyclerView.ViewHolder
     {
@@ -54,6 +65,12 @@ public class AwardsViewAdapter extends RecyclerView.Adapter<AwardsViewAdapter.Aw
     public void onBindViewHolder(@NonNull AwardViewHolder holder, int position) {
         Award award = awardsList.get(position);
         holder.textViewAwardName.setText(award.getName());
+        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callbackInterface.awardsItemClicked(award);
+            }
+        });
     }
 
 
