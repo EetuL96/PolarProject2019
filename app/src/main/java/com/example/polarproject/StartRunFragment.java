@@ -30,6 +30,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
+import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarFinalValueListener;
+import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.example.polarproject.Classes.RouteDataPoint;
 
 import org.json.JSONArray;
@@ -69,6 +72,7 @@ public class StartRunFragment extends Fragment {
     private TextView textViewASpeed = null;
     private TextView textViewDistance = null;
     private ArrayAdapter IDAdapter = null;
+    private CrystalRangeSeekbar bpmRangeBar;
     private ArrayList<RouteDataPoint> dataPointArrayList = new ArrayList<>();
     private ArrayList<String> IDArrayList = new ArrayList<>();
     private double lat;
@@ -146,6 +150,24 @@ public class StartRunFragment extends Fragment {
                         dataPointArrayList = new ArrayList<>();
                     }
                 }
+            }
+        });
+        bpmRangeBar = view.findViewById(R.id.bpmRangeBar);
+        final TextView bpmLow = view.findViewById(R.id.bpmLow);
+        final TextView bpmHigh = view.findViewById(R.id.bpmHigh);
+        bpmRangeBar.setMinStartValue(80);
+        bpmRangeBar.setMaxStartValue(170);
+        bpmRangeBar.apply();
+        bpmRangeBar.setOnRangeSeekbarChangeListener(new OnRangeSeekbarChangeListener() {
+            @Override
+            public void valueChanged(Number minValue, Number maxValue) {
+                bpmLow.setText(String.valueOf(minValue));
+                bpmHigh.setText(String.valueOf(maxValue));
+            }
+        });
+        bpmRangeBar.setOnRangeSeekbarFinalValueListener(new OnRangeSeekbarFinalValueListener() {
+            @Override
+            public void finalValue(Number minValue, Number maxValue) {
             }
         });
         return view;
@@ -286,6 +308,8 @@ public class StartRunFragment extends Fragment {
             js.put("time", dataPointArrayList.get(dataPointArrayList.size()-1).getTime());
             js.put("bpm_average", aBpm);
             js.put("bpm_maks", maksBpm);
+            js.put("low_bpm",bpmRangeBar.getSelectedMinValue());
+            js.put("high_bpm",bpmRangeBar.getSelectedMaxValue());
             js.put("speed_average_kmh", distance/((dataPointArrayList.get(dataPointArrayList.size()-1).getTime())/1000/3600));
         }
         catch (JSONException e) {
