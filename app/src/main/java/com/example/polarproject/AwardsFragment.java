@@ -59,7 +59,7 @@ public class AwardsFragment extends Fragment implements HerokuDataBase.AwardsLis
 
         herokuDataBase = new HerokuDataBase(getContext());
         herokuDataBase.setAwardsListener(this);
-        herokuDataBase.getAwardsByUserId(((Application) getActivity().getApplication()).getUser().getID());
+        herokuDataBase.getAwardsByUserId(((Application) getActivity().getApplication()).getUser().getID(), ((Application) getActivity().getApplication()).getToken());
         return parent;
     }
 

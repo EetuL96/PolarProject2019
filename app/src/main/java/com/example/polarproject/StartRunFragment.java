@@ -329,15 +329,16 @@ public class StartRunFragment extends Fragment {
                     public void onErrorResponse(VolleyError error) {
                         Log.d("kimmo", "onErrorResponse: error");
                     }
-                }) {
+        }) {
 
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        HashMap<String, String> headers = new HashMap<>();
-                        headers.put("Content-Type", "application/json; charset=utf-8");
-                        return headers;
-                    }
-                };
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", ((Application) getActivity().getApplication()).getToken());
+                return headers;
+            }
+        };
         queue.add(jsonObjReq);
     }
 

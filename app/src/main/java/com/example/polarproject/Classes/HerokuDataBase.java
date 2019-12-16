@@ -248,7 +248,16 @@ public class HerokuDataBase {
                         //Log.d("LOL", error.getMessage().toString());
                         callbackInterface.userByEmailError();
                     }
-                });
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", token);
+                return headers;
+            }
+        };
         mQueue.add(jsonObjectRequest);
         Log.d("LOL", "FINISH");
     }
@@ -307,12 +316,20 @@ public class HerokuDataBase {
                     public void onErrorResponse(VolleyError error) {
                         callbackInterface.loginError();
                     }
-                });
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
         mQueue.add(jsonObjectRequest);
         Log.d("LOL", "FINISH");
     }
 
-    public void createUserToDB(String email, String password, String firstname, String lastname)
+    public void createUserToDB(String email, String password, String firstname, String lastname, String token)
     {
         JSONObject js = new JSONObject();
         try {
@@ -343,6 +360,7 @@ public class HerokuDataBase {
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", token);
                 return headers;
             }
         };
@@ -350,7 +368,7 @@ public class HerokuDataBase {
 
     }
 
-    public void getAllUsers()
+    public void getAllUsers(String token)
     {
         String url = "https://polarapp-oamk.herokuapp.com/users";
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
@@ -386,12 +404,21 @@ public class HerokuDataBase {
                         Log.d("GGGGG", error.toString());
                         callbackInterface3.allUsersError();
                     }
-                });
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", token);
+                return headers;
+            }
+        };
         mQueue.add(jsonArrayRequest);
         Log.d("LOL", "FINISH");
     }
 
-    public void searchUserByEmail(String email)
+    public void searchUserByEmail(String email, String token)
     {
         String url = "https://polarapp-oamk.herokuapp.com/users/email/" + email;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -424,12 +451,21 @@ public class HerokuDataBase {
                         Log.d("RRRR", error.getMessage());
                         callbackInterface4.userSeacrhNotFound();
                     }
-                });
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", token);
+                return headers;
+            }
+        };
         mQueue.add(jsonObjectRequest);
         Log.d("LOL", "FINISH");
     }
 
-    public void createNewFollow(String ownId, String targetId)
+    public void createNewFollow(String ownId, String targetId, String token)
     {
         JSONObject js = new JSONObject();
         try {
@@ -461,13 +497,14 @@ public class HerokuDataBase {
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", token);
                 return headers;
             }
         };
         mQueue.add(jsonObjReq);
     }
 
-    public void getFollowedUsers(String ownId)
+    public void getFollowedUsers(String ownId, String token)
     {
         String url = "https://polarapp-oamk.herokuapp.com/follows/myId/" + ownId + "/users";
         Log.d("XDXD", ownId);
@@ -507,11 +544,20 @@ public class HerokuDataBase {
                         Log.d("11111", error.toString());
                         callbackInterface6.userGetFollowError();
                     }
-                });
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", token);
+                return headers;
+            }
+        };
         mQueue.add(jsonArrayRequest);
     }
 
-    public void getAllUsersAndCheckIfFollowed(String ownId)
+    public void getAllUsersAndCheckIfFollowed(String ownId, String token)
     {
         String url = "https://polarapp-oamk.herokuapp.com/users/followCheck/" + ownId;
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
@@ -552,11 +598,20 @@ public class HerokuDataBase {
                     public void onErrorResponse(VolleyError error) {
                         Log.d("VBVB", error.toString());
                     }
-                });
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", token);
+                return headers;
+            }
+        };
         mQueue.add(jsonArrayRequest);
     }
 
-    public void searchUserByEmailAndGetFollowed(String email, String ownId)
+    public void searchUserByEmailAndGetFollowed(String email, String ownId, String token)
     {
         String url = "https://polarapp-oamk.herokuapp.com/users/email/followCheck";
         JSONObject js = new JSONObject();
@@ -595,7 +650,16 @@ public class HerokuDataBase {
                     public void onErrorResponse(VolleyError error) {
                         callbackInterface8.searchFailed();
                     }
-                });
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", token);
+                return headers;
+            }
+        };
         mQueue.add(jsonObjectRequest);
         Log.d("LOL", "FINISH");
     }
@@ -655,7 +719,7 @@ public class HerokuDataBase {
     }
 
 
-    public void unFollow(String myId, String targetId)
+    public void unFollow(String myId, String targetId, String token)
     {
         Log.d("BBBB", "myId: " + myId + " targetId: " + targetId);
         String url = "https://polarapp-oamk.herokuapp.com/follows/myId/"+myId+ "/targetId/" + targetId;
@@ -681,21 +745,21 @@ public class HerokuDataBase {
                 Log.d("BBBB", error.getMessage());
                 callbackInterface9.userUnfollowedError();
             }
-        })
-        {
-            /*@Override
+        }) {
+
+            @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
-                headers.put("X-HTTP-Method-Override", "DELETE");
+                headers.put("x-access-token", token);
                 return headers;
-            }*/
+            }
         };
         mQueue.add(jsonObjReq);
     }
 
 
-    public void getRoutesByUserId(String id)
+    public void getRoutesByUserId(String id, String token)
     {
         Log.d("JGJGJG", "START");
         String url = "https://polarapp-oamk.herokuapp.com/routes/owner/" + id;
@@ -743,12 +807,21 @@ public class HerokuDataBase {
                     public void onErrorResponse(VolleyError error) {
                         Log.d("JGJGJG", error.toString());
                     }
-                });
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", token);
+                return headers;
+            }
+        };
         mQueue.add(jsonArrayRequest);
     }
 
 
-    public void deleteUser(String myId)
+    public void deleteUser(String myId, String token)
     {
         Log.d("DQDQDQ", myId);
         String url = "https://polarapp-oamk.herokuapp.com/users/" + myId;
@@ -772,20 +845,20 @@ public class HerokuDataBase {
             public void onErrorResponse(VolleyError error) {
                 callbackInterface12.deleteUserFailed();
             }
-        })
-        {
-            /*@Override
+        }) {
+
+            @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
-                headers.put("X-HTTP-Method-Override", "DELETE");
+                headers.put("x-access-token", token);
                 return headers;
-            }*/
+            }
         };
         mQueue.add(jsonObjReq);
     }
 
-    public void deleteRoute(String routeId)
+    public void deleteRoute(String routeId, String token)
     {
         String url = "https://polarapp-oamk.herokuapp.com/routes/" + routeId;
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
@@ -811,11 +884,20 @@ public class HerokuDataBase {
             public void onErrorResponse(VolleyError error) {
                 deleteRouteListener.deleteRouteError();
             }
-        });
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", token);
+                return headers;
+            }
+        };
         mQueue.add(jsonObjReq);
     }
 
-    public void getAwardsByUserId(String ownId)
+    public void getAwardsByUserId(String ownId, String token)
     {
         Log.d("JGJGJG", "START");
         String url = "https://polarapp-oamk.herokuapp.com/awards/owner/" + ownId;
@@ -854,7 +936,16 @@ public class HerokuDataBase {
                     public void onErrorResponse(VolleyError error) {
                         Log.d("JGJGJG", error.toString());
                     }
-                });
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", token);
+                return headers;
+            }
+        };
         mQueue.add(jsonArrayRequest);
     }
 }

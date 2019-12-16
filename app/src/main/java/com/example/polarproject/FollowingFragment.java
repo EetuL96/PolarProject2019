@@ -84,7 +84,7 @@ public class FollowingFragment extends Fragment implements HerokuDataBase.Databa
         User user = ((Application) getActivity().getApplication()).getUser();
         herokuDataBase = new HerokuDataBase(getContext());
         herokuDataBase.setDatabaseGetFollowedListener(this);
-        herokuDataBase.getFollowedUsers(user.getID());
+        herokuDataBase.getFollowedUsers(user.getID(), ((Application) getActivity().getApplication()).getToken());
 
         return parent;
 

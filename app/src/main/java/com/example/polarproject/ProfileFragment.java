@@ -183,14 +183,14 @@ public class ProfileFragment extends Fragment implements TabLayoutMediator.TabCo
                 Application application = (Application) getContext().getApplicationContext();
                 User user = application.getUser();
                 profileUser.setIsFollowed(true);
-                herokuDataBase.createNewFollow(user.getID(), profileUser.getID());
+                herokuDataBase.createNewFollow(user.getID(), profileUser.getID(), ((Application) getActivity().getApplication()).getToken());
             }
             else
             {
                 Application application = (Application) getContext().getApplicationContext();
                 User user = application.getUser();
                 profileUser.setIsFollowed(false);
-                herokuDataBase.unFollow(user.getID(), profileUser.getID());
+                herokuDataBase.unFollow(user.getID(), profileUser.getID(), ((Application) getActivity().getApplication()).getToken());
             }
 
         }

@@ -71,7 +71,7 @@ public class RoutesRecycleFragment extends Fragment implements HerokuDataBase.Da
 
         herokuDataBase = new HerokuDataBase(getContext());
         herokuDataBase.setDatabaseGetRoutesListener(this);
-        herokuDataBase.getRoutesByUserId(profileUser.getID());
+        herokuDataBase.getRoutesByUserId(profileUser.getID(), ((Application) getActivity().getApplication()).getToken());
 
         return rootView;
     }
