@@ -39,6 +39,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class RoutesFragment extends Fragment implements HerokuDataBase.DeleteRouteListener {
@@ -154,7 +156,7 @@ public class RoutesFragment extends Fragment implements HerokuDataBase.DeleteRou
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
                                             Log.d("ALALAL", "Yes Button Clicked!");
-                                            herokuDataBase.deleteRoute(route.getId());
+                                            herokuDataBase.deleteRoute(route.getId(), ((Application) getActivity().getApplication()).getToken());
                                         }
                                     });
 
@@ -181,7 +183,16 @@ public class RoutesFragment extends Fragment implements HerokuDataBase.DeleteRou
                     @Override
                     public void onErrorResponse(VolleyError error) {
                     }
-                });
+                }) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("x-access-token", ((Application) getActivity().getApplication()).getToken());
+                return headers;
+            }
+        };
         mQueue.add(jsonArrayRequest);
     }
 

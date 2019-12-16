@@ -81,7 +81,7 @@ public class SettingsFragment extends Fragment implements HerokuDataBase.DeleteU
 
                         //TODO DELETE USER FROM DATABASE
                         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        herokuDataBase.deleteUser(((Application) getActivity().getApplication()).getUser().getID());
+                        herokuDataBase.deleteUser(((Application) getActivity().getApplication()).getUser().getID(), ((Application) getActivity().getApplication()).getToken());
                     }
                 });
 
