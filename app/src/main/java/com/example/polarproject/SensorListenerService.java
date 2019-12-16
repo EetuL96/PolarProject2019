@@ -50,8 +50,8 @@ public class SensorListenerService extends Service implements SensorEventListene
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
+    //private LocationManager locationManager;
+    //private LocationListener locationListener;
 
     private PolarBleApi api;
     private Disposable broadcastDisposable;
