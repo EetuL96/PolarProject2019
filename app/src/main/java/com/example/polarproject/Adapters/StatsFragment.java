@@ -42,8 +42,8 @@ public class StatsFragment extends Fragment {
         User user = ((Application) getActivity().getApplication()).getUser();
 
         String kms = String.format("%.0f KM", user.getKilometersRun());
-        String tt = Long.toString(user.getTotalTime()/1000/3600) + " H";
-        String as = String.format("%.1f KM/S", user.getAverageSpeed());
+        String tt = (user.getTotalTime()/1000/3600) + " H";
+        String as = String.format("%.1f KM/H", user.getAverageSpeed());
         String rc = Long.toString(user.getRunsCompleted());
         String lr = String.format("%.1f KM", user.getLongestRun());
         String ad = String.format("%.1f KM", user.getAverageDistance());

@@ -229,8 +229,15 @@ public class HerokuDataBase {
 
                             User user = new User();
                             user.setID(id);
+                            user.setEmail(email);
                             user.setFirstName(firstname);
                             user.setLastName(lastname);
+                            user.setAverageDistance(jsonObject.getDouble("averagedistance"));
+                            user.setAverageSpeed(jsonObject.getDouble("averagespeed"));
+                            user.setKilometersRun(jsonObject.getDouble("kilometersrun"));
+                            user.setTotalTime(jsonObject.getLong("totaltime"));
+                            user.setRunsCompleted(jsonObject.getInt("runscompleted"));
+                            user.setLongestRun(jsonObject.getDouble("longestrun"));
 
                             callbackInterface.userByEmailSuccess(user);
                         }
@@ -329,7 +336,7 @@ public class HerokuDataBase {
         Log.d("LOL", "FINISH");
     }
 
-    public void createUserToDB(String email, String password, String firstname, String lastname, String token)
+    public void createUserToDB(String email, String password, String firstname, String lastname)
     {
         JSONObject js = new JSONObject();
         try {
@@ -360,7 +367,6 @@ public class HerokuDataBase {
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
-                headers.put("x-access-token", token);
                 return headers;
             }
         };

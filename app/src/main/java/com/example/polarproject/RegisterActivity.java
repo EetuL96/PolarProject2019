@@ -71,7 +71,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             password = editTextPassword.getText().toString();
             firstname = editTextFirstname.getText().toString();
             lastname = editTextLastname.getText().toString();
-            herokuDataBase.createUserToDB(email, password, firstname, lastname, ((Application) getApplication()).getToken());
+            herokuDataBase.createUserToDB(email, password, firstname, lastname);
         }
     }
 
