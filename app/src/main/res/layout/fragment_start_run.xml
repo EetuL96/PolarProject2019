@@ -7,79 +7,133 @@
     android:background="@drawable/background1"
     tools:context=".StartRunFragment">
 
+    <TextView
+        android:id="@+id/bpmRangeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Select BPM tracking range:"
+        android:textColor="#FFF"
+        android:textSize="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
+    <com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
+        android:id="@+id/bpmRangeBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:data_type="_integer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:left_thumb_color="#0F0"
+        app:left_thumb_color_pressed="#0F0"
+        app:max_value="200"
+        app:min_value="50"
+        app:right_thumb_color="#F00"
+        app:gap="20"
+        app:right_thumb_color_pressed="#F00"
+        app:steps="1"
+        android:layout_margin="20dp"
+        app:bar_highlight_color="#FFF"
+        app:bar_color="@color/colorPrimaryDark"
+        app:layout_constraintTop_toBottomOf="@id/bpmRangeText"/>
+    <TextView
+        android:id="@+id/bpmLow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bpmRangeBar"
+        app:layout_constraintLeft_toLeftOf="@id/bpmRangeBar"
+        android:text="50"
+        android:textSize="20dp"
+        android:textColor="#FFF"
+        android:layout_margin="10dp"/>
+    <TextView
+        android:id="@+id/bpmHigh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bpmRangeBar"
+        app:layout_constraintRight_toRightOf="@id/bpmRangeBar"
+        android:text="150"
+        android:textSize="20dp"
+        android:textColor="#FFF"
+        android:layout_margin="10dp"/>
     <Button
         android:id="@+id/btnStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="220dp"
-        android:layout_marginTop="80dp"
         android:text="Start"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="36dp"
+        android:layout_marginTop="36dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewASpeed"/>
 
     <TextView
         android:id="@+id/textViewID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="60dp"
-        android:text="Select ID"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_margin="16dp"
+        android:text="Select Polar device ID:"
+        android:textColor="#FFF"
+        android:textSize="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bpmLow" />
 
     <Spinner
         android:id="@+id/spinnerID"
         android:layout_width="150dp"
         android:layout_height="30dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/edit_text_login"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewID" />
+        app:layout_constraintLeft_toLeftOf="@id/textViewID"
+        app:layout_constraintRight_toRightOf="@id/textViewID"
+        app:layout_constraintTop_toBottomOf="@id/textViewID"/>
 
     <TextView
         android:id="@+id/textViewActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="220dp"
-        android:layout_marginTop="160dp"
+        android:textColor="#FFF"
         android:text="Activity"
         android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinnerID"
+        android:layout_margin="20dp"/>
 
     <TextView
         android:id="@+id/textViewBPM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="160dp"
+        android:textColor="#FFF"
         android:text="Bpm"
         android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinnerID"
+        android:layout_margin="20dp"/>/>
 
     <TextView
         android:id="@+id/textViewASpeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="240dp"
+        android:textColor="#FFF"
         android:text="Speed"
         android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewBPM"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"/>
 
     <TextView
         android:id="@+id/textViewDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="220dp"
-        android:layout_marginTop="240dp"
+        android:textColor="#FFF"
         android:text="Distance"
         android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewActivity"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="40dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

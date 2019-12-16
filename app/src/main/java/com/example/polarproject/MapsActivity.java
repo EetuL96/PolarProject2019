@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -47,7 +48,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     RequestQueue mQueue;
     String routeId;
     ArrayList<RouteDataPoint> dataPoints = new ArrayList<>();
-
+    TextView bpmLowText;
+    TextView bpmMidText;
+    TextView bpmHighText;
+    TextView avgBpmValue;
+    TextView maxBpmValue;
+    TextView timeValue;
+    TextView distanceValue;
+    MarkerOptions options = new MarkerOptions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +68,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mQueue = Volley.newRequestQueue(this);
+        bpmLowText = findViewById(R.id.lowBpmText);
+        bpmMidText = findViewById(R.id.midBpmText);
+        bpmHighText = findViewById(R.id.highBpmText);
+        avgBpmValue = findViewById(R.id.avgBpmValue);
+        maxBpmValue = findViewById(R.id.maxBpmValue);
+        timeValue = findViewById(R.id.timeValue);
+        distanceValue = findViewById(R.id.distanceValue);
     }
 
     @Override
@@ -124,6 +139,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         try
                         {
                             try{
+                                double bpmValueLow = jsonObject.getInt("bpm_low");
+                                double bpmValueHigh = jsonObject.getInt("bpm_high");
+                                bpmLowText.setText((int) bpmValueLow+"");
+                                bpmMidText.setText(Math.round((bpmValueLow + bpmValueHigh)/2) + "");
+                                bpmHighText.setText((int) bpmValueHigh+"");
+                                avgBpmValue.setText(Math.round(jsonObject.getDouble("bpm_average"))+"");
+                                maxBpmValue.setText((int) jsonObject.getDouble("bpm_maks")+"");
+                                long ms = jsonObject.getLong("time");
+                                int s = (int) ms / 1000;
+                                int m = s / 60;
+                                s -= m * 60;
+                                timeValue.setText(m +" min , " + s + " s");
+                                distanceValue.setText((Math.round(jsonObject.getDouble("distance") * 10.0 ) / 10.0)+" km");
                                 JSONArray array = jsonObject.getJSONArray("datapoints");
 
                                 for(int i = 0; i< array.length() ;i++){
@@ -136,13 +164,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     dataPoint.setBpm(jObject.getInt("bpm"));
                                     dataPoints.add(dataPoint);
                                 }
+                                boolean maxBpmFound = false;
                                 for (int i = 1; i < dataPoints.size() ; i++) {
                                     int gValue = 255;
                                     int rValue = 255;
-                                    double highBpm = 160;
-                                    double lowBpm = 60;
                                     double bpm = dataPoints.get(i).getBpm();
-                                    Double scaleValue = (bpm - lowBpm) / (highBpm - lowBpm);
+                                    if (maxBpmFound == false && bpm == jsonObject.getDouble("bpm_maks")) {
+                                        options.position(new LatLng(dataPoints.get(i).getLat(), dataPoints.get(i).getLng()));
+                                        options.icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_heartrate_max));
+                                        mMap.addMarker(options);
+                                        maxBpmFound = true;
+                                    }
+                                    Double scaleValue = (bpm - bpmValueLow) / (bpmValueHigh - bpmValueLow);
                                     scaleValue = Math.min(1.0, scaleValue);
                                     scaleValue = Math.max(0.0, scaleValue);
                                     if (scaleValue > 0.5) {
@@ -156,10 +189,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                             .width(16)
                                             .color(lineColor));
                                 }
+                                options.position(new LatLng(dataPoints.get(0).getLat(), dataPoints.get(0).getLng()));
+                                options.icon(BitmapDescriptorFactory.fromResource(R.drawable.startmarker));
+                                mMap.addMarker(options);
+                                options.position(new LatLng(dataPoints.get(dataPoints.size()-1).getLat(), dataPoints.get(dataPoints.size()-1).getLng()));
+                                options.icon(BitmapDescriptorFactory.fromResource(R.drawable.stopmarker));
+                                mMap.addMarker(options);
                                 double avgLat = (dataPoints.get(0).getLat() + dataPoints.get(dataPoints.size() - 1).getLat()) / 2;
                                 double avgLng = (dataPoints.get(0).getLng() + dataPoints.get(dataPoints.size() - 1).getLng()) / 2;
                                 LatLng startLocation = new LatLng(avgLat, avgLng);
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLocation, 14));
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLocation, 15));
                             }catch (Exception e){
                             }
                         }

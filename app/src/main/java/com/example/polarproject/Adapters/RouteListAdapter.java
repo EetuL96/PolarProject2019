@@ -49,7 +49,7 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         s -= m * 60;
         textViewTime.setText(m +" min , " + s + " s");
         TextView textViewDistance = convertView.findViewById(R.id.textViewRouteDistance);
-        textViewDistance.setText(route.getDistance()+" km");
+        textViewDistance.setText((Math.round(route.getDistance() * 10.0 ) / 10.0)+" km");
         return convertView;
     }
 
