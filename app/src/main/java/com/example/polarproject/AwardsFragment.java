@@ -16,10 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.polarproject.Adapters.AwardsViewAdapter;
 import com.example.polarproject.Adapters.RecyclerViewAdapter;
 import com.example.polarproject.Classes.Award;
+import com.example.polarproject.Classes.HerokuDataBase;
 
 import java.util.ArrayList;
 
-public class AwardsFragment extends Fragment{
+public class AwardsFragment extends Fragment implements HerokuDataBase.AwardsListener{
 
     private RecyclerView recyclerView;
     private AwardsViewAdapter mAdapter;
@@ -27,6 +28,7 @@ public class AwardsFragment extends Fragment{
     private ArrayList<Award> dataset = new ArrayList<>();
     private View parent;
     private static final int NUMBER_OF_COLUMNS = 3;
+    HerokuDataBase herokuDataBase;
 
     @Nullable
     @Override
@@ -42,21 +44,6 @@ public class AwardsFragment extends Fragment{
         Award award4 = new Award();
         Award award5 = new Award();
 
-        award1.setName("Award 1");
-        dataset.add(award1);
-
-        award2.setName("Speedrunner Award");
-        dataset.add(award2);
-
-        award3.setName("Ironman Award");
-        dataset.add(award3);
-
-        award4.setName("Marathon Award");
-        dataset.add(award4);
-
-        award5.setName("Marathon Award");
-        dataset.add(award5);
-        //TEST DATA END
 
 
         recyclerView = parent.findViewById(R.id.recyclerview);
@@ -68,6 +55,9 @@ public class AwardsFragment extends Fragment{
 
         mAdapter.notifyDataSetChanged();
 
+        herokuDataBase = new HerokuDataBase(getContext());
+        herokuDataBase.setAwardsListener(this);
+        herokuDataBase.getAwardsByUserId(((Application) getActivity().getApplication()).getUser().getID());
         return parent;
     }
 
@@ -77,4 +67,14 @@ public class AwardsFragment extends Fragment{
 
     }
 
+    @Override
+    public void AwardFound(Award award) {
+        dataset.add(award);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void AwardError() {
+
+    }
 }

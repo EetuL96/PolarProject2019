@@ -174,6 +174,18 @@ public class HerokuDataBase {
     DataBaseGetRoutesByIdListener callbackInterface11 = null;
     DeleteUserListener callbackInterface12 = null;
     DeleteRouteListener deleteRouteListener = null;
+    AwardsListener awardsListener = null;
+
+    public interface AwardsListener
+    {
+        void AwardFound(Award award);
+        void AwardError();
+    }
+
+    public void setAwardsListener(AwardsListener listener)
+    {
+        this.awardsListener = listener;
+    }
 
     public void setDeleteRouteListener(DeleteRouteListener listener)
     {
@@ -680,7 +692,6 @@ public class HerokuDataBase {
     }
 
 
-    //TODO CREATE METHOD AND INTERFACE THAT GETROUTES BY ID
     public void getRoutesByUserId(String id)
     {
         Log.d("JGJGJG", "START");
@@ -799,6 +810,49 @@ public class HerokuDataBase {
             }
         });
         mQueue.add(jsonObjReq);
+    }
+
+    public void getAwardsByUserId(String ownId)
+    {
+        Log.d("JGJGJG", "START");
+        String url = "https://polarapp-oamk.herokuapp.com/awards/owner/" + ownId;
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try
+                        {
+                            Log.d("JGJGJG", "RESPONSE START");
+                            int i = 0;
+                            while (i < response.length())
+                            {
+                                JSONObject jsonObject = response.getJSONObject(i);
+
+                                Award award = new Award();
+                                award.setName(jsonObject.getString("name"));
+                                award.setDescription(jsonObject.getString("description"));
+                                award.setLevel(jsonObject.getInt("level"));
+                                Log.d("ASDF", award.getName() + " " + award.getDescription() + " " + award.getLevel());
+                                awardsListener.AwardFound(award);
+                                i++;
+                            }
+
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                            Log.d("ASDF", e.toString());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("JGJGJG", error.toString());
+                    }
+                });
+        mQueue.add(jsonArrayRequest);
     }
 }
 
