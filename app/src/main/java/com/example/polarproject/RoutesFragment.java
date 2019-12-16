@@ -252,7 +252,6 @@ public class RoutesFragment extends Fragment implements HerokuDataBase.DeleteRou
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
         void openRoute(String routeId);
         void newRoute();
