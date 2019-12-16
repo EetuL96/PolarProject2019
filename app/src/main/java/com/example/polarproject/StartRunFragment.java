@@ -237,7 +237,9 @@ public class StartRunFragment extends Fragment {
         RouteDataPoint dp = arrayList.get(arrayList.size()-1);
         user.setKilometersRun(user.getKilometersRun()+distance);
         user.setTotalTime(user.getTotalTime()+dp.getTime());
-        user.setAverageSpeed(user.getKilometersRun()/(user.getTotalTime()/1000/3600));
+        double time = Double.valueOf(user.getTotalTime());
+        time = time/3600000;
+        user.setAverageSpeed(user.getKilometersRun()/time);
         user.setRunsCompleted(user.getRunsCompleted()+1);
         user.setAverageDistance(user.getKilometersRun()/user.getRunsCompleted());
         if(user.getLongestRun()<distance){
@@ -395,10 +397,11 @@ public class StartRunFragment extends Fragment {
                             datapoint.setTime(System.currentTimeMillis() - starttime);
                             distance += calcDistance(oldLat, lat, oldLng, lng);
 
-                            textViewDistance.setText(distance + " km");
+                            //textViewDistance.setText(distance + " km");
+                            textViewDistance.setText(String.format("%.2f km",distance));
                             double time = dataPointArrayList.get(dataPointArrayList.size()-1).getTime();
                             double speed = distance/(time/1000/3600);
-                            textViewASpeed.setText(String.format("%.2f", speed) + " km/h");
+                            textViewASpeed.setText(String.format("%.2f km/h", speed));
                             Log.d("kimmo", "distance: " + distance);
                             Log.d("kimmo", "time: " + time);
                             Log.d("kimmo", "speed: " + speed);
